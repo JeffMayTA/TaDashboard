@@ -57,8 +57,6 @@ You will have to exit and re-run app on any changes to code to see in local - re
 
 ## Deployment
 
-This project is currently hosted on PythonAnywhere.
+This project is currently deployed to Google App Engine 
 
-There is not an automated action to deploy.
-
-Once code is merged to master, run a Git Pull from master in a pythonanywhere bash terminal
+more instructions to come - merging to master will not currently deplopy to app engine. deployment happens locally via gcloud app deploy once the SDK in installed locally and properly setup 
