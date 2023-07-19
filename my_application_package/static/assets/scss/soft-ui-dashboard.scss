@@ -1,0 +1,140 @@
+/* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/4cf1b8");
+  
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 700;
+  font-style: italic;
+  src: url('../fonts/AxiformaBoldItalic/font.woff2') format('woff2'), url('../fonts/AxiformaBoldItalic/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 300;
+  src: url('../fonts/AxiformaLight/font.woff2') format('woff2'), url('../fonts/AxiformaLight/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 800;
+  font-style: italic;
+  src: url('../fonts/AxiformaExtraBoldItalic/font.woff2') format('woff2'), url('../fonts/AxiformaExtraBoldItalic/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 900;
+  font-style: italic;
+  src: url('../fonts/AxiformaBlackItalic/font.woff2') format('woff2'), url('../fonts/AxiformaBlackItalic/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 500;
+  src: url('../fonts/AxiformaMedium/font.woff2') format('woff2'), url('../fonts/AxiformaMedium/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 700;
+  src: url('../fonts/AxiformaBold/font.woff2') format('woff2'), url('../fonts/AxiformaBold/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 400;
+  src: url('../fonts/AxiformaBook/font.woff2') format('woff2'), url('../fonts/AxiformaBook/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 600;
+  font-style: italic;
+  src: url('../fonts/AxiformaSemiBoldItalic/font.woff2') format('woff2'), url('../fonts/AxiformaSemiBoldItalic/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 400;
+  font-style: italic;
+  src: url('../fonts/AxiformaBookItalic/font.woff2') format('woff2'), url('../fonts/AxiformaBookItalic/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 300;
+  font-style: italic;
+  src: url('../fonts/AxiformaLightItalic/font.woff2') format('woff2'), url('../fonts/AxiformaLightItalic/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 800;
+  src: url('../fonts/AxiformaExtraBold/font.woff2') format('woff2'), url('../fonts/AxiformaExtraBold/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 400;
+  font-style: italic;
+  src: url('../fonts/AxiformaItalic/font.woff2') format('woff2'), url('../fonts/AxiformaItalic/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 400;
+  src: url('../fonts/AxiformaRegular/font.woff2') format('woff2'), url('../fonts/AxiformaRegular/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 600;
+  src: url('../fonts/AxiformaSemiBold/font.woff2') format('woff2'), url('../fonts/AxiformaSemiBold/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 500;
+  font-style: italic;
+  src: url('../fonts/AxiformaMediumItalic/font.woff2') format('woff2'), url('../fonts/AxiformaMediumItalic/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 900;
+  src: url('../fonts/AxiformaBlack/font.woff2') format('woff2'), url('../fonts/AxiformaBlack/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 200;
+  src: url('../fonts/AxiformaThin/font.woff2') format('woff2'), url('../fonts/AxiformaThin/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 900;
+  font-style: italic;
+  src: url('../fonts/AxiformaHeavyItalic/font.woff2') format('woff2'), url('../fonts/AxiformaHeavyItalic/font.woff') format('woff');
+}
+@font-face {
+  font-family: "Axiforma";
+  font-weight: 200;
+  font-style: italic;
+  src: url('../fonts/AxiformaThinItalic/font.woff2') format('woff2'), url('../fonts/AxiformaThinItalic/font.woff') format('woff');
+}
+
+
+// =========================================================
+// * Soft UI Dashboard Pro - v1.1.1
+// =========================================================
+//
+// * Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-pro
+// * Copyright 2023 Creative Tim (https://www.creative-tim.com)
+//
+// Coded by www.creative-tim.com
+//
+// =========================================================
+//
+// * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+// Bootstrap Functions
+@import "soft-ui-dashboard/bootstrap/functions";
+
+// Custom Variables
+@import "soft-ui-dashboard/custom/variables";
+
+// Theme Variables
+@import "soft-ui-dashboard/variables";
+
+// Bootstrap Core
+@import "soft-ui-dashboard/bootstrap/bootstrap";
+
+// Theme Core
+@import "soft-ui-dashboard/theme-pro";
+
+// Custom Variables
+@import "soft-ui-dashboard/custom/styles";
