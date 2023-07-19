@@ -1,11 +1,13 @@
 import os
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from flask_login import login_required, current_user, LoginManager
 from google.cloud import logging as gcp_logging
 
 from .models import db, User  # import db here
+from .forms import RegisterForm  # import RegisterForm here
+
 
 load_dotenv()
 login_manager = LoginManager()
@@ -35,6 +37,7 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
+    
 
     @app.route('/')
     @login_required  # Apply the login_required decorator
@@ -42,6 +45,16 @@ def create_app():
         # Perform necessary processing or logic
         # Retrieve data if needed
         return render_template('index.html')
+    
+    @app.route('/signup', methods=['GET', 'POST'])
+    def signup():
+        form = RegisterForm()
+        if form.validate_on_submit():
+            form.create_user()
+            flash('Account created successfully. You can now log in.', 'success')
+            return redirect(url_for('auth.login'))
+        return render_template('signup.html', form=form)
+
 
     # Define your custom error handler
     @app.errorhandler(404)
