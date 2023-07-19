@@ -1,6 +1,7 @@
 import os
 from flask import Flask, redirect, url_for, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from dotenv import load_dotenv
 from flask_login import login_required, current_user, LoginManager
 from google.cloud import logging as gcp_logging
@@ -26,6 +27,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
 
     db.init_app(app)
+    migrate = Migrate(app, db)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'  # Set the login view
     login_manager.login_message = 'Please log in to access this page'  # Set the login message
