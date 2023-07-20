@@ -1,6 +1,7 @@
 import os
 from flask import Flask, redirect, url_for, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate, upgrade
 from dotenv import load_dotenv
 from flask_login import login_required, current_user, LoginManager
 from google.cloud import logging as gcp_logging
@@ -21,11 +22,26 @@ def create_app():
     
     app.secret_key = os.environ.get('SECRET_KEY') or 'supersecretkey'
 
-    database_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../dash.db')
-    database_uri = 'sqlite:///' + database_path
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
+# Check if the app is running in production
+    if os.getenv('FLASK_ENV') == 'production':
+        # Use Google Cloud SQL database in production
+        db_user = os.environ.get('DB_USER')
+        db_pass = os.environ.get('DB_PASSWORD')
+        db_name = os.environ.get('DB_NAME')
+        instance_connection_name = os.environ.get('CLOUD_SQL_CONNECTION_NAME')
+        app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqldb://{db_user}:{db_pass}@/{db_name}?unix_socket=/cloudsql/{instance_connection_name}'
+    else:
+        # Use SQLite database in development
+        database_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../dash.db')
+        app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + database_path
+
 
     db.init_app(app)
+    migrate = Migrate(app, db)
+    # Create tables if they don't exist
+    with app.app_context():
+        upgrade()
+        
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'  # Set the login view
     login_manager.login_message = 'Please log in to access this page'  # Set the login message
