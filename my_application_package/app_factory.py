@@ -28,6 +28,10 @@ def create_app():
 
     db.init_app(app)
     migrate = Migrate(app, db)
+    # Create tables if they don't exist
+    with app.app_context():
+        db.create_all()
+        
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'  # Set the login view
     login_manager.login_message = 'Please log in to access this page'  # Set the login message
