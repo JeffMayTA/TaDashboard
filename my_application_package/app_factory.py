@@ -9,11 +9,14 @@ from flask_mail import Mail
 
 
 from .models import db, User  # import db here
-from .forms import RegisterForm  # import RegisterForm here
+from .forms import ForgotPasswordForm, ResetPasswordForm, RegisterForm  
 
 
 load_dotenv()
 login_manager = LoginManager()
+
+mail = Mail()
+
 
 def create_app():
     # Import the blueprints
@@ -48,14 +51,15 @@ def create_app():
     login_manager.login_view = 'auth.login'  # Set the login view
     login_manager.login_message = 'Please log in to access this page'  # Set the login message
     
-    app.config['MAIL_SERVER'] = 'your_smtp_server'
+    app.config['MAIL_SERVER'] = 'smtp.sendgrid.net'
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USERNAME'] = 'your_email_username'
-    app.config['MAIL_PASSWORD'] = 'your_email_password'
-    app.config['MAIL_DEFAULT_SENDER'] = 'your_default_sender_email'
+    app.config['MAIL_USERNAME'] = 'apikey'
+    app.config['MAIL_PASSWORD'] = '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'
+    app.config['MAIL_DEFAULT_SENDER'] = 'digital@tenadams.com'
+    
+    mail.init_app(app)
 
-    mail = Mail(app)
 
     # Register the blueprints
     app.register_blueprint(auth, url_prefix='/auth')
