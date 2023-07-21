@@ -5,6 +5,8 @@ from flask_migrate import Migrate, upgrade
 from dotenv import load_dotenv
 from flask_login import login_required, current_user, LoginManager
 from google.cloud import logging as gcp_logging
+from flask_mail import Mail
+
 
 from .models import db, User  # import db here
 from .forms import RegisterForm  # import RegisterForm here
@@ -45,6 +47,15 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'  # Set the login view
     login_manager.login_message = 'Please log in to access this page'  # Set the login message
+    
+    app.config['MAIL_SERVER'] = 'your_smtp_server'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USERNAME'] = 'your_email_username'
+    app.config['MAIL_PASSWORD'] = 'your_email_password'
+    app.config['MAIL_DEFAULT_SENDER'] = 'your_default_sender_email'
+
+    mail = Mail(app)
 
     # Register the blueprints
     app.register_blueprint(auth, url_prefix='/auth')

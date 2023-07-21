@@ -9,15 +9,20 @@ from flask_login import current_user
 
 auth = Blueprint('auth', __name__)
 
+
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
-            login_user(user)
-            return redirect(url_for('index'))  # or wherever you want to redirect after login
-    return render_template('auth/login.html', form=form)
+            login_user(user, remember=form.remember_me.data)  # Use the 'remember_me' field here
+            flash('Logged in successfully.', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid email or password.', 'danger')
+    return render_template('login.html', form=form)
+
 
 
 @auth.route('/register', methods=['GET', 'POST'])
