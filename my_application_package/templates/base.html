@@ -37,6 +37,15 @@
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 {% block content %}{% endblock %}
 {% include '_loadlast.html' %}
 {% include '_footer.html' %}

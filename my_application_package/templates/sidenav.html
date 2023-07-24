@@ -52,16 +52,22 @@
           <div class="collapse show " id="navAdmin">
             <ul class="nav ms-4 ps-3">
               <li class="nav-item ">
-                <a class="nav-link " href="./profile.html">
+                <a class="nav-link " href="{{ url_for('admin.profile') }}">
                   <span class="sidenav-mini-icon"> P </span>
                   <span class="sidenav-normal"> Profile </span>
-                </a>
+              </a>
               </li>
               <li class="nav-item ">
-                <a class="nav-link " href="./admin.html">
-                  <span class="sidenav-mini-icon"> A </span>
-                  <span class="sidenav-normal"> Admin </span>
-                </a>
+                <a class="nav-link " href="{{ url_for('admin.new_user') }}">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal"> Add User </span>
+              </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="{{ url_for('admin.user_list') }}">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal"> User List </span>
+              </a>
               </li>
             </ul>
           </div>
