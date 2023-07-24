@@ -22,6 +22,7 @@ def create_app():
     # Import the blueprints
     from .blueprints.tenadams import tenadams
     from .blueprints.auth import auth
+    from .blueprints.nuvance import nuvance
     
     app = Flask(__name__, static_folder='static', static_url_path='/static')
     
@@ -64,6 +65,7 @@ def create_app():
     # Register the blueprints
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(tenadams, url_prefix='/tenadams')
+    app.register_blueprint(nuvance, url_prefix='/nuvance')
     
     @login_manager.user_loader
     def load_user(user_id):
