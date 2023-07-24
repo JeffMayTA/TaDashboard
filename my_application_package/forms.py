@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo, Email, ValidationError
-from wtforms_sqlalchemy.fields import QuerySelectField
-from .models import Client, User, db
+from wtforms_sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
+from .models import Client, User, db, Role
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -45,3 +45,37 @@ class ResetPasswordForm(FlaskForm):
     password = PasswordField('New Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
+
+class UserForm(FlaskForm):
+    fname = StringField('First Name', validators=[DataRequired()])
+    lname = StringField('Last Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    roles = QuerySelectMultipleField('Roles', query_factory=lambda: Role.query.all(), get_label='name')
+    clients = QuerySelectMultipleField('Clients', query_factory=lambda: Client.query.all(), get_label='name')
+    
+class EditUserForm(FlaskForm):
+    fname = StringField('First Name', validators=[DataRequired()])
+    lname = StringField('Last Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    roles = QuerySelectMultipleField('Roles', query_factory=lambda: Role.query.all(), get_label='name')
+    clients = QuerySelectMultipleField('Clients', query_factory=lambda: Client.query.all(), get_label='name')
+
+    def __init__(self, *args, **kwargs):
+        super(EditUserForm, self).__init__(*args, **kwargs)
+
+        def process_formdata_role(valuelist):
+            if valuelist:
+                self.roles.data = [Role.query.get(int(id_)) for id_ in valuelist]
+            else:
+                self.roles.data = []
+
+        self.roles.process_formdata = process_formdata_role
+
+        def process_formdata_client(valuelist):
+            if valuelist:
+                self.clients.data = [Client.query.get(int(id_)) for id_ in valuelist]
+            else:
+                self.clients.data = []
+
+        self.clients.process_formdata = process_formdata_client
