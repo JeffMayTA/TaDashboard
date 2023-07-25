@@ -18,46 +18,61 @@
             <span class="nav-link-text ms-1">Welcome</span>
           </a>
         </li>
-         <!-- Check if the user is associated with any clients -->
-{% if current_user.clients %}
-<!-- Iterate over the user's roles and show corresponding menu items -->
-{% for role in current_user.roles %}
-    {% for menu_item in role.menu_items %}
-        {% if current_user.clients and (menu_item.client_id is none or menu_item.client_id in current_user.clients|map(attribute='id')) %}
-            {% if menu_item.parent_menu_item_id is none %}
-                <li class="nav-item">
-                    <hr class="horizontal dark" />
-                    <a data-bs-toggle="collapse" href="#nav{{ role.id }}{{ menu_item.id }}" class="nav-link " aria-controls="nav{{ role.id }}{{ menu_item.id }}" role="button" aria-expanded="true">
-                        <!-- Render the menu item icon and label -->
-                        {{ menu_item.label }}
-                    </a>
-                    <div class="collapse show " id="nav{{ role.id }}{{ menu_item.id }}">
-                        <ul class="nav ms-4 ps-3">
-                            {% for sub_item in role.menu_items %}
-                                {% if sub_item.parent_menu_item_id == menu_item.id and (sub_item.client_id is none or sub_item.client_id in current_user.clients|map(attribute='id')) %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ url_for(sub_item.target_url) }}">
-                                            <!-- Render the sub-menu item icon and label as a link -->
-                                            {{ sub_item.label }}
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </li>
-            {% endif %}
-        {% endif %}
-    {% endfor %}
-{% endfor %}
-{% endif %}
-     <li class="nav-item ">
-      <a class="nav-link " href="{{ url_for('admin.profile') }}">
-        <span class="sidenav-mini-icon"> P </span>
-        <span class="sidenav-normal"> Profile </span>
-    </a>
-    </li>
-    <li class="nav-item">
+        <li class="nav-item">
+          <hr class="horizontal dark" />
+          <a data-bs-toggle="collapse" href="#navEmployees" class="nav-link " aria-controls="navEmployees" role="button" aria-expanded="true">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center fas fa-user text-dark me-2">
+            </div>
+            <span class="nav-link-text ms-1">Employees</span>
+          </a>
+          <div class="collapse  show " id="navEmployees">
+            <ul class="nav ms-4 ps-3">
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('tenadams.utilization') }}">
+                  <span class="sidenav-mini-icon"> U </span>
+                  <span class="sidenav-normal"> Utilization </span>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="./timesheets.html">
+                  <span class="sidenav-mini-icon"> T </span>
+                  <span class="sidenav-normal"> Timesheets </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <hr class="horizontal dark" />
+          <a data-bs-toggle="collapse" href="#navAdmin" class="nav-link " aria-controls="navAdmin" role="button" aria-expanded="true">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center fas fa-screwdriver-wrench text-dark me-2">
+            </div>
+            <span class="nav-link-text ms-1">Admin</span>
+          </a>
+          <div class="collapse show " id="navAdmin">
+            <ul class="nav ms-4 ps-3">
+              <li class="nav-item ">
+                <a class="nav-link " href="{{ url_for('admin.profile') }}">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal"> Profile </span>
+              </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="{{ url_for('admin.new_user') }}">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal"> Add User </span>
+              </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="{{ url_for('admin.user_list') }}">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal"> User List </span>
+              </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
           <hr class="horizontal dark" />
           <form action="{{ url_for('auth.logout') }}" method="POST">
             <button type="submit" class="nav-link btn btn-link">

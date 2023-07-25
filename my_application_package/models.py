@@ -71,6 +71,8 @@ class MenuItem(db.Model):
     parent_menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_item.id'), nullable=True)
     client_id = db.Column(db.Integer, db.ForeignKey('client.id'))
     parent_menu_item = db.relationship('MenuItem', remote_side=[id])
+        # Add the icon_class column to hold the CSS class name of the icon
+    icon_class = db.Column(db.String(50))
 
     client = db.relationship('Client', backref='menu_items', foreign_keys=[client_id])
 
