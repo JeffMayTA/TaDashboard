@@ -18,45 +18,50 @@
             <span class="nav-link-text ms-1">Welcome</span>
           </a>
         </li>
-         <!-- Check if the user is associated with any clients -->
+ <!-- Check if the user is associated with any clients -->
 {% if current_user.clients %}
-<!-- Iterate over the user's roles and show corresponding menu items -->
+{% set rendered_menu_items = {} %} {# Create a dictionary to store rendered menu_item IDs #}
 {% for role in current_user.roles %}
-    {% for menu_item in role.menu_items %}
-        {% if current_user.clients and (menu_item.client_id is none or menu_item.client_id in current_user.clients|map(attribute='id')) %}
-            {% if menu_item.parent_menu_item_id is none %}
-                <li class="nav-item">
-                    <hr class="horizontal dark" />
-                    <a data-bs-toggle="collapse" href="#nav{{ role.id }}{{ menu_item.id }}" class="nav-link " aria-controls="nav{{ role.id }}{{ menu_item.id }}" role="button" aria-expanded="true">
-                        <!-- Render the menu item icon and label -->
-                        {{ menu_item.label }}
-                    </a>
-                    <div class="collapse show " id="nav{{ role.id }}{{ menu_item.id }}">
-                        <ul class="nav ms-4 ps-3">
-                            {% for sub_item in role.menu_items %}
-                                {% if sub_item.parent_menu_item_id == menu_item.id and (sub_item.client_id is none or sub_item.client_id in current_user.clients|map(attribute='id')) %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ url_for(sub_item.target_url) }}">
-                                            <!-- Render the sub-menu item icon and label as a link -->
-                                            {{ sub_item.label }}
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </li>
-            {% endif %}
+  {% for menu_item in role.menu_items %}
+    {% if current_user.clients and (menu_item.client_id is none or menu_item.client_id in current_user.clients|map(attribute='id')) %}
+      {% if menu_item.parent_menu_item_id is none %}
+        {% if menu_item.id not in rendered_menu_items %} {# Check if the menu_item has not been rendered for any role #}
+          {% set _ = rendered_menu_items.update({menu_item.id: true}) %} {# Mark the menu_item ID as rendered #}
+          <li class="nav-item">
+            <hr class="horizontal dark" />
+            <a data-bs-toggle="collapse" href="#nav{{ role.id }}{{ menu_item.id }}" class="nav-link" aria-controls="nav{{ role.id }}{{ menu_item.id }}" role="button" aria-expanded="true">
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center fas {{ menu_item.icon_class }} text-dark me-2">
+              </div>
+              <span class="nav-link-text ms-1">{{ menu_item.label }}</span>
+            </a>
+            <div class="collapse show" id="nav{{ role.id }}{{ menu_item.id }}">
+              <ul class="nav ms-4 ps-3">
+                {% for sub_item in role.menu_items %}
+                  {% if sub_item.parent_menu_item_id == menu_item.id and (sub_item.client_id is none or sub_item.client_id in current_user.clients|map(attribute='id')) %}
+                    {% if sub_item.id not in rendered_menu_items %} {# Check if the sub_item has not been rendered for any role #}
+                      {% set _ = rendered_menu_items.update({sub_item.id: true}) %} {# Mark the sub_item ID as rendered #}
+                      <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for(sub_item.target_url) }}">
+                          <!-- Render the sub-menu item icon and label as a link -->
+                          <span>{{ sub_item.label }}</span>
+                        </a>
+                      </li>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
+          </li>
         {% endif %}
-    {% endfor %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
 {% endfor %}
 {% endif %}
-     <li class="nav-item ">
-      <a class="nav-link " href="{{ url_for('admin.profile') }}">
-        <span class="sidenav-mini-icon"> P </span>
-        <span class="sidenav-normal"> Profile </span>
-    </a>
-    </li>
+
+
+
+
     <li class="nav-item">
           <hr class="horizontal dark" />
           <form action="{{ url_for('auth.logout') }}" method="POST">

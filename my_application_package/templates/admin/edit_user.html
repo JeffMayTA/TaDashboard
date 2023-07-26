@@ -23,11 +23,21 @@
 
     <p>
         {{ form.roles.label }}<br>
-        {{ form.roles() }}
+        {% for choice, label, checked in form.roles.iter_choices() %}
+          <div>
+            <input type="radio" name="{{ form.roles.name }}" value="{{ choice }}" {% if checked %}checked{% endif %}>
+            {{ label }}
+          </div>
+        {% endfor %}
     </p>
     <p>
         {{ form.clients.label }}<br>
-        {{ form.clients() }}
+        {% for choice, label, checked in form.clients.iter_choices() %}
+          <div>
+            <input type="checkbox" name="{{ form.clients.name }}" value="{{ choice }}" {% if checked %}checked{% endif %}>
+            {{ label }}
+          </div>
+        {% endfor %}
     </p>
     <p>
         <button type="submit" class="btn btn-primary">Update User</button>
