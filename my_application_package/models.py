@@ -49,7 +49,18 @@ class Role(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
-    menu_items = db.relationship('MenuItem', secondary=role_menu_items, backref=db.backref('roles', lazy='dynamic'))
+    menu_items = db.relationship('MenuItem', secondary=role_menu_items, backref='assigned_roles_rel')
+
+    def add_menu_item(self, menu_item):
+        if not self.has_menu_item(menu_item):
+            self.menu_items.append(menu_item)
+
+    def remove_menu_item(self, menu_item):
+        if self.has_menu_item(menu_item):
+            self.menu_items.remove(menu_item)
+
+    def has_menu_item(self, menu_item):
+        return menu_item in self.menu_items
 
 class MenuItem(db.Model):
     __tablename__ = 'menu_item'
@@ -60,5 +71,20 @@ class MenuItem(db.Model):
     parent_menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_item.id'), nullable=True)
     client_id = db.Column(db.Integer, db.ForeignKey('client.id'))
     parent_menu_item = db.relationship('MenuItem', remote_side=[id])
+        # Add the icon_class column to hold the CSS class name of the icon
+    icon_class = db.Column(db.String(50))
 
     client = db.relationship('Client', backref='menu_items', foreign_keys=[client_id])
+        # New relationship with roles
+    assigned_roles = db.relationship('Role', secondary=role_menu_items, backref='menu_items_rel')
+
+    def add_role(self, role):
+        if not self.has_role(role):
+            self.roles.append(role)
+
+    def remove_role(self, role):
+        if self.has_role(role):
+            self.roles.remove(role)
+
+    def has_role(self, role):
+        return role in self.roles

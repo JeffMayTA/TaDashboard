@@ -1,0 +1,772 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<body class="g-sidenav-show h-100 bg-gray-100">
+        {% include "sidenav.html" %}
+        <div class="container-fluid py-4 flex-grow-1 d-flex flex-column">
+            <div class="row">
+              <div class="col position-relative z-index-2">
+                <div class="card card-plain">
+                  <div class="card-body p-3">
+                    <div class="row">
+                      <div class="col-md-8 mb-4">
+                        <div class="d-flex flex-column h-100">
+                          <h2 class="font-weight-bolder mb-0">Overview</h2>
+                        </div>
+                      </div>
+                      <div class="col-md-4 mb-4">
+                        <div class="input-group input-group-lg">
+                          <input class="form-control datepicker" placeholder="Please select date" type="text" onfocus="focused(this)" onfocusout="defocused(this)">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6 col-lg-3 mb-4">
+                    <div class="card ">
+                      <div class="card-body p-3">
+                        <div class="numbers">
+                          <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Impressions</p>
+                          <h4 class="font-weight-bolder mb-0">
+                            3.6M
+                          </h4>
+                          <p class="mb-0 text-sm text-success text-capitalize font-weight-bold"><i class="far fa-angles-up text-sm" aria-hidden="true"></i> 11.2%</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6 col-lg-3 mb-4">
+                    <div class="card ">
+                      <div class="card-body p-3">
+                        <div class="numbers">
+                          <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Engagements</p>
+                          <h4 class="font-weight-bolder mb-0">
+                            122.8K
+                          </h4>
+                          <p class="mb-0 text-sm text-success text-capitalize font-weight-bold"><i class="far fa-angles-up text-sm" aria-hidden="true"></i> 44.8%</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6 col-lg-3 mb-4">
+                    <div class="card ">
+                      <div class="card-body p-3">
+                        <div class="numbers">
+                          <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Followers</p>
+                          <h4 class="font-weight-bolder mb-0">
+                            111.0K
+                          </h4>
+                          <p class="mb-0 text-sm text-success text-capitalize font-weight-bold"><i class="far fa-angles-up text-sm" aria-hidden="true"></i> 4.7%</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6 col-lg-3 mb-4">
+                    <div class="card ">
+                      <div class="card-body p-3">
+                        <div class="numbers">
+                          <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Post Link Clicks</p>
+                          <h4 class="font-weight-bolder mb-0">
+                            35.4K
+                          </h4>
+                          <p class="mb-0 text-sm text-success text-capitalize font-weight-bold"><i class="far fa-angles-up text-sm" aria-hidden="true"></i> 57.5%</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col col-md-6">
+                    <div class="card mb-4">
+                      <div class="card-body p-3">
+                        <h4 class="font-weight-bolder mb-3">
+                          Strategic Imperatives
+                        </h4>
+                        <div class="row">
+                          <div class="col-xxl-5 mb-4">
+                            <div class="chart">
+                              <canvas id="chart-imperatives" class="chart-canvas" height="300"></canvas>
+                            </div>
+                          </div>
+                          <div class="col-xxl-7">
+                            <div class="table-responsive">
+                              <table class="table align-items-center mb-0">
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Grow Institutes & Service Lines</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3 opacity-9"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Increase New Patient Count in NHMP PC</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3 opacity-8"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Increase Likelihood to Recommend</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3 opacity-7"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Increase Annual Wellness Visits (AWNs)</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3 opacity-6"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Expand Digital Access</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3 opacity-5"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Increase Employee Retention</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3 opacity-4"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Grow Outpatient Volume</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card mb-4">
+                      <div class="card-body p-3">
+                        <h4 class="font-weight-bolder mb-0">
+                          Service Content
+                        </h4>
+                      </div>
+                      <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                          <thead>
+                            <tr>
+                              <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3"></th>
+                              <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-2">Service Line</th>
+                              <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Posts</th>
+                              <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Impressions</th>
+                              <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Engagements</th>
+                              <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Post Link Clicks</th>
+                              <th class="text-end text-uppercase text-xxs font-weight-bolder opacity-7"><i class="far fa-angles-up text-sm" aria-hidden="true"></i></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">1.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Brand</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">60</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">118,208</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">8,933</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">3,740</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">2.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Neurology and Neurosurgery</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">7</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">31,008</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">1,952</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">980</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">3.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Pediatrics</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">5</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">15,404</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">2,127</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">354</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">4.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Emergency Services</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">4</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">24,200</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">1,768</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">246</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">5.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Cancer</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">9</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">14,271</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">1,294</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">239</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-341 <i class="far fa-angles-down text-sm text-danger" aria-hidden="true"></i></p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">6.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Women's Health</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">5</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">5,784</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">426</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">239</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">7.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Endocrinology</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">3</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">16,830</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">399</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">190</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">8.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Heart</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">16</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">16,830</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">1,361</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">167</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-18 <i class="far fa-angles-down text-sm text-danger" aria-hidden="true"></i></p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">9.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Blood Draw</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">2</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">22,060</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">161</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">59</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-</p>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="col col-md-6">
+                    <div class="card mb-4">
+                      <div class="card-body p-3">
+                        <h4 class="font-weight-bolder mb-3">
+                          Audience
+                        </h4>
+                        <div class="row">
+                          <div class="col-xxl-5 mb-4">
+                            <div class="chart">
+                              <canvas id="chart-audience" class="chart-canvas" height="300"></canvas>
+                            </div>
+                          </div>
+                          <div class="col-xxl-7">
+                            <div class="table-responsive">
+                              <table class="table align-items-center mb-0">
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Kelly</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3 opacity-9"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Entire Service Area</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3 opacity-8"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">George and Linda</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3 opacity-7"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Perry</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex px-2 py-0">
+                                        <span class="badge bg-primary me-3 opacity-6"> </span>
+                                        <div class="d-flex flex-column justify-content-center">
+                                          <h6 class="mb-0 text-sm">Barbara</h6>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-body p-3">
+                        <h4 class="font-weight-bolder mb-0">
+                          Content Landing Pages
+                        </h4>
+                      </div>
+                      <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                          <thead>
+                            <tr>
+                              <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3"></th>
+                              <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-2">Landing Page Category</th>
+                              <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Impressions</th>
+                              <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Engagements</th>
+                              <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Post Link Clicks</th>
+                              <th class="text-end text-uppercase text-xxs font-weight-bolder opacity-7"><i class="far fa-angles-up text-sm" aria-hidden="true"></i></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">1.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Other</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">98,101</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">6,776</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">2,334</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">2,067 <i class="far fa-angles-up text-sm text-success" aria-hidden="true"></i></p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">2.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Healthline (Blog)</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">102,299</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">6,245</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">1,443</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-361 <i class="far fa-angles-down text-sm text-danger" aria-hidden="true"></i></p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">3.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">YouTube</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">25,715</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">805</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">465</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-229 <i class="far fa-angles-down text-sm text-danger" aria-hidden="true"></i></p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">4.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Services</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">26,715</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">805</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">465</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-229 <i class="far fa-angles-down text-sm text-danger" aria-hidden="true"></i></p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">5.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Find Care</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">7,762</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">206</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">39</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">22 <i class="far fa-angles-up text-sm text-success" aria-hidden="true"></i></p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-3">
+                                <p class="font-weight-bold mb-0">6.</p>
+                              </td>
+                              <td>
+                                <p class="font-weight-bold mb-0">Locations</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">1,615</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">901</p>
+                              </td>
+                              <td class="text-center">
+                                <p class="font-weight-bold mb-0">3</p>
+                              </td>
+                              <td class="text-end px-4">
+                                <p class="font-weight-bold mb-0">-</p>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>     
+            
+            <footer class="footer pt-3 mt-auto ">
+              <div class="container-fluid">
+                <div class="row align-items-center justify-content-lg-between">
+                  <div class="col-lg-12 mb-lg-0 mb-4">
+                    <div class="copyright text-center text-sm text-muted text-lg-start">
+                      Copyright © Ten Adams, Inc. <script>document.write(new Date().getFullYear())</script>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </main>
+      
+      
+      
+        {% include '_corejs.html' %}
+        <!-- Datepicker scripts --> 
+        <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
+        <script>
+          // Datepicker
+          if (document.querySelector('.datepicker')) {
+            flatpickr('.datepicker', {
+              mode: "range"
+            });
+          }
+      
+          // Doughnut chart - Strategic Imperatives
+          var chartImperatives = document.getElementById("chart-imperatives").getContext("2d");
+      
+          new Chart(chartImperatives, {
+            type: "doughnut",
+            data: {
+              labels: ['Grow Institutes & Service Lines', 'Increase New Patient Count in NHMP PC', 'Increase Likelihood to Recommend', 'Increase Annual Wellness Visits (AWNs)', 'Expand Digital Access', 'Increase Employee Retention', 'Grow Outpatient Volume'],
+              datasets: [{
+                label: "Strategic Imperatives",
+                weight: 9,
+                cutout: 60,
+                tension: 0.9,
+                pointRadius: 2,
+                borderWidth: 2,
+                backgroundColor: ['#405166', '#536275', '#667485', '#798594', '#8C97A3', '#9FA8B3', '#B3B9C2'],
+                data: [214, 45, 41, 15, 14, 12, 8],
+                fill: false
+              }],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false,
+                }
+              },
+              interaction: {
+                intersect: false,
+                mode: 'index',
+              },
+              scales: {
+                y: {
+                  grid: {
+                    drawBorder: false,
+                    display: false,
+                    drawOnChartArea: false,
+                    drawTicks: false,
+                  },
+                  ticks: {
+                    display: false
+                  }
+                },
+                x: {
+                  grid: {
+                    drawBorder: false,
+                    display: false,
+                    drawOnChartArea: false,
+                    drawTicks: false,
+                  },
+                  ticks: {
+                    display: false,
+                  }
+                },
+              },
+            },
+          });
+      
+          // Doughnut chart - Audience
+          var chartAudience = document.getElementById("chart-audience").getContext("2d");
+      
+          new Chart(chartAudience, {
+            type: "doughnut",
+            data: {
+              labels: ['Kelly', 'Entire Service Area', 'Goerge and Linda', 'Perry', 'Barbara'],
+              datasets: [{
+                label: "Audience",
+                weight: 9,
+                cutout: 60,
+                tension: 0.9,
+                pointRadius: 2,
+                borderWidth: 2,
+                backgroundColor: ['#405166', '#536275', '#667485', '#798594', '#8C97A3'],
+                data: [203, 166, 106, 67, 39],
+                fill: false
+              }],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false,
+                }
+              },
+              interaction: {
+                intersect: false,
+                mode: 'index',
+              },
+              scales: {
+                y: {
+                  grid: {
+                    drawBorder: false,
+                    display: false,
+                    drawOnChartArea: false,
+                    drawTicks: false,
+                  },
+                  ticks: {
+                    display: false
+                  }
+                },
+                x: {
+                  grid: {
+                    drawBorder: false,
+                    display: false,
+                    drawOnChartArea: false,
+                    drawTicks: false,
+                  },
+                  ticks: {
+                    display: false,
+                  }
+                },
+              },
+            },
+          });
+        </script>
+
+{% include '_loadlast.html' %}
+{% endblock %}

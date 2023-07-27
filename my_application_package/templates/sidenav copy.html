@@ -18,51 +18,61 @@
             <span class="nav-link-text ms-1">Welcome</span>
           </a>
         </li>
- <!-- Check if the user is associated with any clients -->
-{% if current_user.clients %}
-{% set rendered_menu_items = {} %} {# Create a dictionary to store rendered menu_item IDs #}
-{% for role in current_user.roles %}
-  {% for menu_item in role.menu_items %}
-    {% if current_user.clients and (menu_item.client_id is none or menu_item.client_id in current_user.clients|map(attribute='id')) %}
-      {% if menu_item.parent_menu_item_id is none %}
-        {% if menu_item.id not in rendered_menu_items %} {# Check if the menu_item has not been rendered for any role #}
-          {% set _ = rendered_menu_items.update({menu_item.id: true}) %} {# Mark the menu_item ID as rendered #}
-          <li class="nav-item">
-            <hr class="horizontal dark" />
-            <a data-bs-toggle="collapse" href="#nav{{ role.id }}{{ menu_item.id }}" class="nav-link" aria-controls="nav{{ role.id }}{{ menu_item.id }}" role="button" aria-expanded="true">
-              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center fas {{ menu_item.icon_class }} text-dark me-2">
-              </div>
-              <span class="nav-link-text ms-1">{{ menu_item.label }}</span>
-            </a>
-            <div class="collapse show" id="nav{{ role.id }}{{ menu_item.id }}">
-              <ul class="nav ms-4 ps-3">
-                {% for sub_item in role.menu_items %}
-                  {% if sub_item.parent_menu_item_id == menu_item.id and (sub_item.client_id is none or sub_item.client_id in current_user.clients|map(attribute='id')) %}
-                    {% if sub_item.id not in rendered_menu_items %} {# Check if the sub_item has not been rendered for any role #}
-                      {% set _ = rendered_menu_items.update({sub_item.id: true}) %} {# Mark the sub_item ID as rendered #}
-                      <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for(sub_item.target_url) }}">
-                          <!-- Render the sub-menu item icon and label as a link -->
-                          <span>{{ sub_item.label }}</span>
-                        </a>
-                      </li>
-                    {% endif %}
-                  {% endif %}
-                {% endfor %}
-              </ul>
+        <li class="nav-item">
+          <hr class="horizontal dark" />
+          <a data-bs-toggle="collapse" href="#navEmployees" class="nav-link " aria-controls="navEmployees" role="button" aria-expanded="true">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center fas fa-user text-dark me-2">
             </div>
-          </li>
-        {% endif %}
-      {% endif %}
-    {% endif %}
-  {% endfor %}
-{% endfor %}
-{% endif %}
-
-
-
-
-    <li class="nav-item">
+            <span class="nav-link-text ms-1">Employees</span>
+          </a>
+          <div class="collapse  show " id="navEmployees">
+            <ul class="nav ms-4 ps-3">
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('tenadams.utilization') }}">
+                  <span class="sidenav-mini-icon"> U </span>
+                  <span class="sidenav-normal"> Utilization </span>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="./timesheets.html">
+                  <span class="sidenav-mini-icon"> T </span>
+                  <span class="sidenav-normal"> Timesheets </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <hr class="horizontal dark" />
+          <a data-bs-toggle="collapse" href="#navAdmin" class="nav-link " aria-controls="navAdmin" role="button" aria-expanded="true">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center fas fa-screwdriver-wrench text-dark me-2">
+            </div>
+            <span class="nav-link-text ms-1">Admin</span>
+          </a>
+          <div class="collapse show " id="navAdmin">
+            <ul class="nav ms-4 ps-3">
+              <li class="nav-item ">
+                <a class="nav-link " href="{{ url_for('admin.profile') }}">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal"> Profile </span>
+              </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="{{ url_for('admin.new_user') }}">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal"> Add User </span>
+              </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="{{ url_for('admin.user_list') }}">
+                  <span class="sidenav-mini-icon"> P </span>
+                  <span class="sidenav-normal"> User List </span>
+              </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
           <hr class="horizontal dark" />
           <form action="{{ url_for('auth.logout') }}" method="POST">
             <button type="submit" class="nav-link btn btn-link">
@@ -125,15 +135,9 @@
         </div>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <ul class="navbar-nav ms-md-auto justify-content-end">
-            <li class="nav-item ps-3">
-              <a href="{{ url_for('admin.profile') }}" class="d-flex align-items-center nav-link text-body font-weight-bold px-0" target="_self">
-                <div>
-                  {% if current_user.profile_photo_url %}
-                    <img src="{{ current_user.profile_photo_url }}" alt="User's Profile Photo" class="avatar avatar-sm me-3">
-                  {% else %}
-                    <img src="/static/assets/img/default_profile_photo.jpg" alt="Default Profile Photo" class="avatar avatar-sm me-3">
-                  {% endif %}
-                </div>
+            <li class="nav-item d-flex align-items-center ps-3">
+              <a href="#" class="nav-link text-body font-weight-bold px-0" target="_blank">
+                <i class="fa fa-user me-sm-1"></i>
                 <span class="d-sm-inline d-none">Hi, {{ current_user.fname }}</span>
               </a>
             </li>

@@ -7,7 +7,6 @@ from flask_login import login_required, current_user, LoginManager
 from google.cloud import logging as gcp_logging
 from flask_mail import Mail
 
-
 from .models import db, User  # import db here
 from .forms import ForgotPasswordForm, ResetPasswordForm, RegisterForm  
 
@@ -45,9 +44,7 @@ def create_app():
 
     db.init_app(app)
     migrate = Migrate(app, db)
-    # Create tables if they don't exist
-    with app.app_context():
-        upgrade()
+
         
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'  # Set the login view
@@ -80,7 +77,12 @@ def create_app():
     def index():
         # Perform necessary processing or logic
         # Retrieve data if needed
-        return render_template('index.html')
+        photo_url = current_user.profile_photo_url
+
+        return render_template('index.html', photo_url=photo_url)
+    
+    
+    
     
     @app.route('/signup', methods=['GET', 'POST'])
     def signup():

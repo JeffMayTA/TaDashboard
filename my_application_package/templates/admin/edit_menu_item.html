@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Edit Menu Item{% endblock %}
+{% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
+
+{% block content %}
+{% include "sidenav.html" %}
+
+<h1>Edit Menu Item</h1>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.label.label }} {{ form.label(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.target_url.label }} {{ form.target_url(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.icon_class.label }} {{ form.icon_class(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.parent_menu_item.label }} {{ form.parent_menu_item(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.roles.label }} {{ form.roles(class="form-control", multiple="multiple") }}
+    </div>
+    <div class="form-group">
+        {{ form.client.label }} {{ form.client(class="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+{% include '_corejs.html' %}
+{% include '_loadlast.html' %}
+{% endblock %}

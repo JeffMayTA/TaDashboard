@@ -6,7 +6,13 @@
   {% include "sidenav.html" %}
   <h1>Profile</h1>
   <p>this page still need formatted</p>
-
+  {% if user.profile_photo_url %}
+  <!-- Display the user's profile photo -->
+  <img src="{{ user.profile_photo_url }}" alt="User's Profile Photo" width="200">
+    {% else %}
+    <!-- Display the default fallback image -->
+    <img src="/static/assets/img/default_profile_photo.jpg" alt="Default Profile Photo" width="200">
+    {% endif %}
   <p>Email: {{ user.email }}</p>
   <p>First Name: {{ user.fname }}</p>
   <p>Last Name: {{ user.lname }}</p>

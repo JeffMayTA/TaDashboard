@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, EqualTo, Email, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, SelectMultipleField
+from wtforms.validators import DataRequired, Length, EqualTo, Email, ValidationError, URL
 from wtforms_sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
-from .models import Client, User, db, Role
+from .models import Client, User, db, Role, MenuItem
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -79,3 +79,34 @@ class EditUserForm(FlaskForm):
                 self.clients.data = []
 
         self.clients.process_formdata = process_formdata_client
+
+class RoleForm(FlaskForm):
+    name = StringField('Role Name', validators=[DataRequired()])
+    # Add other fields as needed
+    submit = SubmitField('Save')
+
+class MenuItemForm(FlaskForm):
+    label = StringField('Label', validators=[DataRequired()])
+    target_url = StringField('Target URL')
+    icon_class = StringField('Icon Class')
+
+    # Include the parent_menu_item field as a SelectField
+    # Use coerce=int to ensure the selected value is stored as an integer
+    parent_menu_item = SelectField('Parent Menu Item', coerce=int, choices=[(0, 'None')], default=0)
+       # New multi-select field for selecting roles
+    roles = SelectMultipleField('Roles', coerce=int, choices=[], default=None)
+    client = QuerySelectField('Client', query_factory=lambda: Client.query.all(),
+                              get_label='name', allow_blank=True)
+
+
+
+
+    submit = SubmitField('Save')
+
+    def __init__(self, *args, **kwargs):
+        super(MenuItemForm, self).__init__(*args, **kwargs)
+
+        # Populate the choices for the parent menu item field, including the current menu item
+        self.parent_menu_item.choices.extend(
+            [(item.id, item.label) for item in MenuItem.query.all()]
+        )
