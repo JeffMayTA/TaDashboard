@@ -16,6 +16,8 @@
                 <th>Target URL</th>
                 <th>Icon Class</th>
                 <th>Parent Menu Item</th>
+                <th>Role</th>
+                <th>Client</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -29,6 +31,20 @@
                 <td>
                     {% if menu_item.parent_menu_item %}
                     {{ menu_item.parent_menu_item.label }}
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if menu_item.role %}
+                    {{ menu_item.role.name }}
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if menu_item.client %}
+                    {{ menu_item.client.name }}
                     {% else %}
                     N/A
                     {% endif %}

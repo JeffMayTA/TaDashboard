@@ -26,7 +26,7 @@
                       <div class="numbers">
                         <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Hours</p>
                         <h4 class="font-weight-bolder mb-0">
-                          800.25
+                          {{ total_hours }}
                         </h4>
                       </div>
                     </div>
@@ -47,7 +47,7 @@
                       <div class="numbers">
                         <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Billable Hours</p>
                         <h4 class="font-weight-bolder mb-0">
-                          348.25
+                          {{ total_billable }}
                         </h4>
                       </div>
                     </div>
@@ -68,7 +68,7 @@
                       <div class="numbers">
                         <p class="mb-0 text-sm text-capitalize font-weight-bold">Overall Utilization</p>
                         <h4 class="font-weight-bolder mb-0">
-                          43.5%
+                          {{ overall_utilization_rate_formatted }}
                         </h4>
                       </div>
                     </div>
@@ -82,6 +82,51 @@
               </div>
             </div>
           </div>
+          <form method="post" action="{{ url_for('tenadams.utilization') }}" class="utilization-form">
+            <div class="row align-items-end">
+              <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="form-group">
+                  <label for="start_date">Start Date:</label>
+                  <input type="text" class="form-control" id="start_date" name="start_date" value="{{ start_date }}" required>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="form-group">
+                  <label for="end_date">End Date:</label>
+                  <input type="text" class="form-control" id="end_date" name="end_date" value="{{ end_date }}" required>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="form-group">
+                  <label for="department">Department:</label>
+                  <select id="department" name="department" class="form-control">
+                    <option value="">Select a department</option>
+                    {% for dep in departments %}
+                    <option value="{{ dep }}" {% if dep == request.form.get('department') %}selected{% endif %}>{{ dep }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="form-group">
+                  <label for="user">User:</label>
+                  <select id="user" name="user" class="form-control">
+                    <option value="">Select a user</option>
+                    {% for user in users %}
+                    {% if not selected_department or user['User_Department'] == selected_department %}
+                    <option value="{{ user['User_Full_Name'] }}" data-department="{{ user['User_Department'] }}" {% if user['User_Full_Name'] == request.form.get('user') %}selected{% endif %}>{{ user['User_Full_Name'] }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>    
+              <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="form-group">
+                  <button class="btn btn-primary btn-block" type="submit" style="margin-top: 31px;">Filter</button>
+                </div>
+              </div>
+            </div>
+          </form>
           <div class="row">
             <div class="col">
               <div class="card">
@@ -550,7 +595,12 @@
   </main>
 
 {% include '_corejs.html' %}
-
+<script>
+  flatpickr("#start_date, #end_date", {
+    dateFormat: "Y-m-d"
+  });
+</script>
+<script>
   
 <script>
 

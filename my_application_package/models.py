@@ -49,7 +49,7 @@ class Role(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
-    menu_items = db.relationship('MenuItem', secondary=role_menu_items, backref=db.backref('roles', lazy='dynamic'))
+    menu_items = db.relationship('MenuItem', secondary=role_menu_items, backref='assigned_roles_rel')
 
     def add_menu_item(self, menu_item):
         if not self.has_menu_item(menu_item):
@@ -76,7 +76,7 @@ class MenuItem(db.Model):
 
     client = db.relationship('Client', backref='menu_items', foreign_keys=[client_id])
         # New relationship with roles
-    roles = db.relationship('Role', secondary=role_menu_items, backref='menu_items')
+    assigned_roles = db.relationship('Role', secondary=role_menu_items, backref='menu_items_rel')
 
     def add_role(self, role):
         if not self.has_role(role):

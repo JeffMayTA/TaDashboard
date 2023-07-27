@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, EqualTo, Email, ValidationError, URL
 from wtforms_sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from .models import Client, User, db, Role, MenuItem
@@ -95,6 +95,10 @@ class MenuItemForm(FlaskForm):
     parent_menu_item = SelectField('Parent Menu Item', coerce=int, choices=[(0, 'None')], default=0)
        # New multi-select field for selecting roles
     roles = SelectMultipleField('Roles', coerce=int, choices=[], default=None)
+    client = QuerySelectField('Client', query_factory=lambda: Client.query.all(),
+                              get_label='name', allow_blank=True)
+
+
 
 
     submit = SubmitField('Save')
