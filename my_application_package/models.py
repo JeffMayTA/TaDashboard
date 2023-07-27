@@ -75,6 +75,8 @@ class MenuItem(db.Model):
     icon_class = db.Column(db.String(50))
 
     client = db.relationship('Client', backref='menu_items', foreign_keys=[client_id])
+        # New relationship with roles
+    roles = db.relationship('Role', secondary=role_menu_items, backref='menu_items')
 
     def add_role(self, role):
         if not self.has_role(role):

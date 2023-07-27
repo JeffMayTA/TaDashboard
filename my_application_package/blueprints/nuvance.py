@@ -9,10 +9,10 @@ def nuvance_home():
     return redirect(url_for('index'))  # Redirect to main/welcome route
 
 # Define the utilization route
-@nuvance.route('/start')
-def start():
+@nuvance.route('/overview')
+def overview():
     breadcrumb = [
         {'name': 'Welcome', 'url': url_for('index')},
-        {'name': 'Start', 'url': url_for('nuvance.start')}
+        {'name': 'Overview', 'url': url_for('nuvance.overview')}
     ]
-    return render_template('nuvance/start.html', breadcrumb=breadcrumb)
+    return render_template('nuvance/overview.html', breadcrumb=breadcrumb)

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Manage Roles{% endblock %}
+{% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
+
+{% block content %}
+{% include "sidenav.html" %}
+
+<h1>Manage Menu Items</h1>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Label</th>
+                <th>Target URL</th>
+                <th>Icon Class</th>
+                <th>Parent Menu Item</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for menu_item in menu_items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ menu_item.label }}</td>
+                <td>{{ menu_item.target_url }}</td>
+                <td>{{ menu_item.icon_class }}</td>
+                <td>
+                    {% if menu_item.parent_menu_item %}
+                    {{ menu_item.parent_menu_item.label }}
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('admin.edit_menu_item', menu_item_id=menu_item.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <form action="{{ url_for('admin.delete_menu_item', menu_item_id=menu_item.id) }}" method="POST">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this menu item?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add New Menu Item Button -->
+<form action="{{ url_for('admin.create_menu_item') }}" method="GET">
+  <button type="submit" class="btn btn-primary">Add New Menu Item</button>
+</form>
+{% include '_corejs.html' %}
+{% include '_loadlast.html' %}
+{% endblock %}

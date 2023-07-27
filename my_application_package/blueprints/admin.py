@@ -1,7 +1,7 @@
 from flask import flash, render_template, redirect, url_for, Blueprint
 from flask_login import login_required, current_user
 from my_application_package.models import User, Role, Client, MenuItem, db
-from my_application_package.forms import UserForm, EditUserForm
+from my_application_package.forms import UserForm, EditUserForm, RoleForm, MenuItemForm
 from my_application_package.decorators import admin_required
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -83,3 +83,113 @@ def edit_user(id):
     
     return render_template('admin/edit_user.html', form=form, user=user, form_type='edit')
 
+# Views for managing roles
+@admin_bp.route('/roles', methods=['GET'])
+@login_required
+@admin_required
+def manage_roles():
+    roles = Role.query.all()
+    return render_template('admin/manage_roles.html', roles=roles)
+
+
+
+@admin_bp.route('/roles/new', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def create_role():
+    form = RoleForm()
+    if form.validate_on_submit():
+        role = Role(name=form.name.data)
+        db.session.add(role)
+        db.session.commit()
+        flash('Role has been created.', 'success')
+        return redirect(url_for('admin.manage_roles'))
+    return render_template('admin/edit_role.html', form=form)
+
+@admin_bp.route('/roles/<int:role_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_role(role_id):
+    role = Role.query.get_or_404(role_id)
+    form = RoleForm(obj=role)
+    if form.validate_on_submit():
+        form.populate_obj(role)
+        db.session.commit()
+        flash('Role has been updated.', 'success')
+        return redirect(url_for('admin.manage_roles'))
+    return render_template('admin/edit_role.html', form=form, role=role)
+
+@admin_bp.route('/roles/<int:role_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_role(role_id):
+    role = Role.query.get_or_404(role_id)
+    db.session.delete(role)
+    db.session.commit()
+    flash('Role has been deleted.', 'success')
+    return redirect(url_for('admin.manage_roles'))
+
+
+# Views for managing menu items
+@admin_bp.route('/menu_items', methods=['GET'])
+@login_required
+@admin_required
+def manage_menu_items():
+    menu_items = MenuItem.query.all()
+    return render_template('admin/manage_menu_items.html', menu_items=menu_items)
+
+@admin_bp.route('/menu_items/new', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def create_menu_item():
+    form = MenuItemForm()
+
+    if form.validate_on_submit():
+        menu_item = MenuItem(
+            label=form.label.data,
+            target_url=form.target_url.data,
+            icon_class=form.icon_class.data,
+            parent_menu_item_id=form.parent_menu_item.data
+        )
+        db.session.add(menu_item)
+        db.session.commit()
+        flash('Menu item has been created.', 'success')
+        return redirect(url_for('admin.manage_menu_items'))
+     # Populate the choices for the parent menu item and roles fields
+    form.parent_menu_item.choices = [(item.id, item.label) for item in MenuItem.query.all()]
+    form.roles.choices = [(role.id, role.name) for role in Role.query.all()]
+
+
+    return render_template('admin/edit_menu_item.html', form=form)
+
+
+@admin_bp.route('/menu_items/<int:menu_item_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_menu_item(menu_item_id):
+    menu_item = MenuItem.query.get_or_404(menu_item_id)
+    form = MenuItemForm(obj=menu_item)
+
+    if form.validate_on_submit():
+        form.populate_obj(menu_item)
+        db.session.commit()
+        flash('Menu item has been updated.', 'success')
+        return redirect(url_for('admin.manage_menu_items'))
+    
+   # Populate the choices for the parent menu item and roles fields
+    form.parent_menu_item.choices = [(item.id, item.label) for item in MenuItem.query.filter(MenuItem.id != menu_item.id).all()]
+    form.roles.choices = [(role.id, role.name) for role in Role.query.all()]
+
+
+    return render_template('admin/edit_menu_item.html', form=form, menu_item=menu_item)
+
+
+@admin_bp.route('/menu_items/<int:menu_item_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_menu_item(menu_item_id):
+    menu_item = MenuItem.query.get_or_404(menu_item_id)
+    db.session.delete(menu_item)
+    db.session.commit()
+    flash('Menu item has been deleted.', 'success')
+    return redirect(url_for('admin.manage_menu_items'))
