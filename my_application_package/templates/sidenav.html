@@ -125,9 +125,15 @@
         </div>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <ul class="navbar-nav ms-md-auto justify-content-end">
-            <li class="nav-item d-flex align-items-center ps-3">
-              <a href="#" class="nav-link text-body font-weight-bold px-0" target="_blank">
-                <i class="fa fa-user me-sm-1"></i>
+            <li class="nav-item ps-3">
+              <a href="{{ url_for('admin.profile') }}" class="d-flex align-items-center nav-link text-body font-weight-bold px-0" target="_self">
+                <div>
+                  {% if current_user.profile_photo_url %}
+                    <img src="{{ current_user.profile_photo_url }}" alt="User's Profile Photo" class="avatar avatar-sm me-3">
+                  {% else %}
+                    <img src="/static/assets/img/default_profile_photo.jpg" alt="Default Profile Photo" class="avatar avatar-sm me-3">
+                  {% endif %}
+                </div>
                 <span class="d-sm-inline d-none">Hi, {{ current_user.fname }}</span>
               </a>
             </li>

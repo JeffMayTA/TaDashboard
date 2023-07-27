@@ -11,6 +11,10 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 @admin_required
 def new_user():
     form = UserForm()
+    breadcrumb = [
+        {'name': 'Welcome', 'url': url_for('index')},
+        {'name': 'Add User', 'url': url_for('admin.new_user')}
+    ]
 
     if form.validate_on_submit():
         user = User(
@@ -25,15 +29,19 @@ def new_user():
         db.session.commit()
         flash('User has been created.', 'success')
         return redirect(url_for('admin.user_list'))
-    return render_template('admin/new_user.html', form=form, form_type='new')
+    return render_template('admin/new_user.html', form=form, form_type='new', breadcrumb=breadcrumb)
 
 
 @admin_bp.route('/user', methods=['GET'])
 @login_required
 @admin_required
 def user_list():
+    breadcrumb = [
+        {'name': 'Welcome', 'url': url_for('index')},
+        {'name': 'User List', 'url': url_for('admin.user_list')}
+    ]
     users = User.query.all()
-    return render_template('admin/user_list.html', users=users)
+    return render_template('admin/user_list.html', users=users, breadcrumb=breadcrumb)
 
 
 @admin_bp.route('/profile', methods=['GET'])
@@ -57,6 +65,10 @@ def delete_user(id):
 @login_required
 @admin_required
 def edit_user(id):
+    breadcrumb = [
+        {'name': 'Welcome', 'url': url_for('index')},
+        {'name': 'Edit User', 'url': url_for('admin.edit_user')}
+    ]
     user = User.query.get(id)
     if not user:
         flash('User not found.', 'error')
@@ -81,15 +93,19 @@ def edit_user(id):
     else:
         print(form.errors)
     
-    return render_template('admin/edit_user.html', form=form, user=user, form_type='edit')
+    return render_template('admin/edit_user.html', form=form, user=user, form_type='edit', breadcrumb=breadcrumb)
 
 # Views for managing roles
 @admin_bp.route('/roles', methods=['GET'])
 @login_required
 @admin_required
 def manage_roles():
+    breadcrumb = [
+        {'name': 'Welcome', 'url': url_for('index')},
+        {'name': 'Manage Roles', 'url': url_for('admin.manage_roles')}
+    ]
     roles = Role.query.all()
-    return render_template('admin/manage_roles.html', roles=roles)
+    return render_template('admin/manage_roles.html', roles=roles, breadcrumb=breadcrumb)
 
 
 
