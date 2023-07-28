@@ -155,11 +155,7 @@
                         <td>
                           <div class="d-flex px-2 py-1">
                             <div>
-                              {% if row['photo_url'] %}
                               <img src="{{ row['photo_url'] }}" class="avatar avatar-sm me-3" alt="User's Profile Photo">
-                              {% else %}
-                              <img src="/static/assets/img/default_profile_photo.jpg" class="avatar avatar-sm me-3" alt="Default Profile Photo">
-                              {% endif %}
                           </div>                          
                             <div class="d-flex flex-column justify-content-center">
                               <h6 class="mb-0">{{ row['User_Full_Name'] }}</h6>

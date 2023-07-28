@@ -45,7 +45,6 @@ def fetch_utilization_data(start_date, end_date):
             """
           
         df = pd.read_gbq(query, project_id=project, credentials=credentials)
-        print(df.to_string())
         return df
     except Exception as e:
         logging.error(f"Error in fetch_utilization_data: {e}")

@@ -23,12 +23,16 @@ def calculate_utilization(df, start_date_str, end_date_str, selected_department,
 
     if selected_user:
         filtered_data = filtered_data[filtered_data['User_Full_Name'] == selected_user]
+    
+    # Replace NaN values in photo_url column
+    filtered_data['photo_url'].fillna('/static/assets/img/default_profile_photo.jpg', inplace=True)
+
 
      # Calculate billable hours
     filtered_data['Billable_Hours'] = np.where(filtered_data['Billable'] == 'Billable', filtered_data['Actual_Hours_Worked'], 0)
 
     # Group data by 'User_Full_Name' and calculate the total actual hours, total billable hours, and total time off hours
-    grouped = filtered_data.groupby(['User_Full_Name', 'User_Department', 'Full_Time', 'Rate_Goal']).agg(
+    grouped = filtered_data.groupby(['User_Full_Name', 'User_Department', 'Full_Time', 'Rate_Goal', 'photo_url']).agg(
         total_actual_hours=('Actual_Hours_Worked', 'sum'),
         total_billable_hours=('Billable_Hours', 'sum'),
         total_time_off_hours=('Actual_Hours_Worked', lambda x: x[filtered_data['Project_Type'] == 'zInternal: Time Off'].sum()),
