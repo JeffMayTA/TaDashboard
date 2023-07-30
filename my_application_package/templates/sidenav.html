@@ -134,7 +134,7 @@
                     <img src="/static/assets/img/default_profile_photo.jpg" alt="Default Profile Photo" class="avatar avatar-sm me-3">
                   {% endif %}
                 </div>
-                <span class="d-sm-inline d-none">Hi, {{ current_user.fname }}</span>
+                <span class="d-sm-inline d-none">{{ g.greeting }}, {{ current_user.fname }}</span>
               </a>
             </li>
             <li class="nav-item d-xl-none ps-3 d-flex align-items-center">

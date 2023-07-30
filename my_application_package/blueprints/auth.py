@@ -2,12 +2,14 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, logout_user, current_user
 from my_application_package.forms import LoginForm, RegisterForm, ForgotPasswordForm, ResetPasswordForm 
 from my_application_package.models import User
+from my_application_package.dictionaries import quotes_and_authors, hellos
 from my_application_package.app_factory import db, mail
 from functools import wraps
 from flask import abort
 from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer, BadSignature
 from flask_mail import Message
+import random
 
 
 auth = Blueprint('auth', __name__)
@@ -16,6 +18,9 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    random_quote_author = random.choice(quotes_and_authors)
+    quote = random_quote_author["quote"]
+    author = random_quote_author["author"]
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
@@ -24,7 +29,7 @@ def login():
             return redirect(url_for('index'))
         else:
             flash('Invalid email or password.', 'danger')
-    return render_template('auth/login.html', form=form)
+    return render_template('auth/login.html', form=form, quote=quote, author=author)
 
 
 
