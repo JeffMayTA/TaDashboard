@@ -65,11 +65,11 @@ more instructions to come - merging to master will not currently deplopy to app 
 
 ### Ten Adams
 
-Utilization - /markup/utilization.html (for example <http://127.0.0.1:5000/markup/utilization.html>)
-Login - /markup/login.html (<http://127.0.0.1:5000/markup/login.html>)
-404 page - /markup/404.html  (<http://127.0.0.1:5000/markup/404.html>)
-Welcome page = /markup/index.html (<http://127.0.0.1:5000/markup/index.html>)
+* Utilization - /markup/utilization.html (for example <http://127.0.0.1:5000/markup/utilization.html>)
+* Login - /markup/login.html (<http://127.0.0.1:5000/markup/login.html>)
+* 404 page - /markup/404.html  (<http://127.0.0.1:5000/markup/404.html>)
+* Welcome page = /markup/index.html (<http://127.0.0.1:5000/markup/index.html>)
 
 ### Nuvance
 
-Nuvance - Index - /markup/nuvance/index.html (<http://127.0.0.1:5000/markup/nuvance/index.html>)
+* Nuvance - Index - /markup/nuvance/index.html (<http://127.0.0.1:5000/markup/nuvance/index.html>)
