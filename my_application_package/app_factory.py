@@ -28,14 +28,6 @@ def create_app():
     
     app.secret_key = os.environ.get('SECRET_KEY') or 'supersecretkey'
     
-    # Set the 'greeting' variable for each request
-    @app.before_request
-    def set_random_greeting():
-        if 'greeting' not in session:
-            session['greeting'] = random.choice(hellos)
-
-        # Store the greeting in 'g.greeting' for global access within the same request
-        g.greeting = session['greeting']
 
 # Check if the app is running in production
     if os.getenv('FLASK_ENV') == 'production':
@@ -95,7 +87,10 @@ def create_app():
         return render_template('index.html', photo_url=photo_url, quote=quote, author=author)
     
     
-    
+    @app.route('/markup/<path:filename>')
+    @login_required  # Apply the login_required decorator
+    def serve_markup(filename):
+        return send_from_directory('markup', filename)
     
     @app.route('/signup', methods=['GET', 'POST'])
     def signup():
