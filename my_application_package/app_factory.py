@@ -1,5 +1,5 @@
 import os
-from flask import Flask, redirect, url_for, render_template, request, flash, session, g
+from flask import Flask, redirect, url_for, render_template, request, flash, session, g, send_from_directory
 from flask_migrate import Migrate, upgrade
 from dotenv import load_dotenv
 from flask_login import login_required, current_user, LoginManager
@@ -88,9 +88,10 @@ def create_app():
     
     
     @app.route('/markup/<path:filename>')
-    @login_required  # Apply the login_required decorator
+    @login_required
     def serve_markup(filename):
-        return send_from_directory('markup', filename)
+        return send_from_directory(os.path.join(os.path.dirname(__file__), 'templates', 'markup'), filename)
+
     
     @app.route('/signup', methods=['GET', 'POST'])
     def signup():
