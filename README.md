@@ -16,7 +16,7 @@ To run this project, you need to have Python 3 installed on your machine. You ca
 * Suggest code editor is VS Code
 * go to the project folder and open in terminal
 * Setup a virtual environment
-`python3 -m venv myvenv`
+`python3 -m venv venv`
 * then run
 `source myvenv/bin/activate`
 * Once activated, you should see the name of your virtual environment in the terminal prompt. You can now install packages and dependencies within this virtual environment without affecting the rest of your system.
