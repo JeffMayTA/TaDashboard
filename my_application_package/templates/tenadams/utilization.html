@@ -265,146 +265,140 @@
   </main>
 
 {% include '_corejs.html' %}
-       <!-- Datepicker scripts --> 
-       <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
-       <script>
-         // Datepicker
-         if (document.querySelector('.datepicker')) {
-           flatpickr('.datepicker', {
-             mode: "single"
-           });
-         }
-        </script>
-  
-        <script>
-          // Register the plugin
-          Chart.register(ChartDataLabels);
-        
-          // Parse the JSON string passed from the backend
-          const nonBillableDataString = '{{ non_billable_data | safe }}';
-          let nonBillableData = [];
-          
-          if (nonBillableDataString) {
-            try {
-              nonBillableData = JSON.parse(nonBillableDataString);
-            } catch (error) {
-              console.error("Error parsing non_billable_data:", error);
-            }
-          }
-        
-        // Combine projectTypes and nonBillableTimes arrays into a single array of objects
-        const combinedData = nonBillableData.map((item, index) => ({
-          projectType: item.project_type,
-          nonBillableTime: item.non_billable_time
-        }));
-        
-        // Sort the combined array based on the nonBillableTimes values in descending order
-        combinedData.sort((a, b) => b.nonBillableTime - a.nonBillableTime);
-        
-        // Extract the sorted projectTypes and nonBillableTimes arrays from the sorted combined array
-        const sortedProjectTypes = combinedData.map(item => item.projectType);
-        const sortedNonBillableTimes = combinedData.map(item => item.nonBillableTime);
-        
-        
-          // Create a donut chart using Chart.js
-          const ctx = document.getElementById('nonBillableDonutChart').getContext('2d');
-          const nonBillableDonutChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-              labels: sortedProjectTypes,
-              datasets: [
-                {
-                  data: sortedNonBillableTimes,
-                  backgroundColor: [
-                    "#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF",
-                    "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493",
-                    "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00"
-                  ],
-                  borderWidth: 1,
-                },
-              ],
-            },
-            options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  cutoutPercentage: 70,
-                  plugins: {
-                      legend: {
-                          display: false
-                      },
-                      tooltip: {
-                          callbacks: {
-                              label: function(context) {
-                                  var dataset = context.dataset;
-                                  var index = context.dataIndex;
-                                  var data = context.chart.data;
-                                  var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
-                                      return previousValue + currentValue;
-                                  });
-                                  var currentValue = dataset.data[index];
-                                  var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
-                                  return data.labels[index] + ": " + percentage + "%";
-                              }
-                          }
-                      },
-                datalabels: {
-                  formatter: function(value, context) {
-                    var dataset = context.chart.data.datasets[context.datasetIndex];
-                    var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
-                      return previousValue + currentValue;
-                    });
-                    var percentage = Math.floor(((value / total) * 100) + 0.5);
-                
-                    // Only show labels for pie pieces with a percentage greater than or equal to 5%
-                    if (percentage >= 5 ) {
-                      return percentage + '%';
-                    } else {
-                      return null; // Return null to hide the label for smaller pie pieces
-                    }
-                  },
-                  color: '#fff',
-                  font: {
-                    size: 14,
-                    weight: 'bold',
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 5,
-                    shadowOffsetX: 2,
-                    shadowOffsetY: 2
-                  },
-                  anchor: 'center', // Change anchor to 'center'
-                  align: 'center', // Change align to 'center'
-                  offset: 0 // Set offset to 0
-                }
-                }
-            }
-        });
-        
-      // Manually create the legend with colors matching the chart
-      const legendContainer = document.getElementById('chart-legend');
-      combinedData.forEach((item, index) => {
-        const value = item.nonBillableTime;
-        if (value > 0) {
-          const legendItem = document.createElement('div');
-          legendItem.classList.add('legend-item');
-
-          // Create the color block with a background color matching the chart's dataset
-          const colorBlock = document.createElement('span');
-          colorBlock.classList.add('color-block');
-          colorBlock.style.backgroundColor = nonBillableDonutChart.data.datasets[0].backgroundColor[index];
-          legendItem.appendChild(colorBlock);
-
-          // Add the project type label
-          const labelText = document.createElement('span');
-          labelText.textContent = item.projectType;
-          legendItem.appendChild(labelText);
-
-          legendContainer.appendChild(legendItem);
-        }
+  <!-- Datepicker scripts --> 
+  <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
+  <script>
+    // Datepicker
+    if (document.querySelector('.datepicker')) {
+      flatpickr('.datepicker', {
+        mode: "single"
       });
-        
-        
-        
-        </script>
+    }
+  </script>
+  
+  <script>
+    // Register the plugin
+    Chart.register(ChartDataLabels);
+  
+    // Parse the JSON string passed from the backend
+    const nonBillableDataString = '{{ non_billable_data | safe }}';
+    let nonBillableData = [];
+    
+    if (nonBillableDataString) {
+      try {
+        nonBillableData = JSON.parse(nonBillableDataString);
+      } catch (error) {
+        console.error("Error parsing non_billable_data:", error);
+      }
+    }
+  
+  // Combine projectTypes and nonBillableTimes arrays into a single array of objects
+  const combinedData = nonBillableData.map((item, index) => ({
+    projectType: item.project_type,
+    nonBillableTime: item.non_billable_time
+  }));
+  
+  // Sort the combined array based on the nonBillableTimes values in descending order
+  combinedData.sort((a, b) => b.nonBillableTime - a.nonBillableTime);
+  
+  // Extract the sorted projectTypes and nonBillableTimes arrays from the sorted combined array
+  const sortedProjectTypes = combinedData.map(item => item.projectType);
+  const sortedNonBillableTimes = combinedData.map(item => item.nonBillableTime);
+  
+  
+    // Create a donut chart using Chart.js
+    const ctx = document.getElementById('nonBillableDonutChart').getContext('2d');
+    const nonBillableDonutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: sortedProjectTypes,
+            datasets: [{
+                data: sortedNonBillableTimes,
+                backgroundColor: ["#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00"],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutoutPercentage: 70,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            var dataset = context.dataset;
+                            var index = context.dataIndex;
+                            var data = context.chart.data;
+                            var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                                return previousValue + currentValue;
+                            });
+                            var currentValue = dataset.data[index];
+                            var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                            return data.labels[index] + ": " + percentage + "%";
+                        }
+                    }
+                },
+          datalabels: {
+            formatter: function(value, context) {
+              var dataset = context.chart.data.datasets[context.datasetIndex];
+              var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                return previousValue + currentValue;
+              });
+              var percentage = Math.floor(((value / total) * 100) + 0.5);
+          
+              // Only show labels for pie pieces with a percentage greater than or equal to 5%
+              if (percentage >= 5 ) {
+                return percentage + '%';
+              } else {
+                return null; // Return null to hide the label for smaller pie pieces
+              }
+            },
+            color: '#fff',
+            font: {
+              size: 14,
+              weight: 'bold',
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+              shadowBlur: 5,
+              shadowOffsetX: 2,
+              shadowOffsetY: 2
+            },
+            anchor: 'center', // Change anchor to 'center'
+            align: 'center', // Change align to 'center'
+            offset: 0 // Set offset to 0
+          }
+          }
+      }
+  });
+  
+  // Manually create the legend
+  const legendContainer = document.getElementById('chart-legend');
+  combinedData.forEach((item, index) => {
+    const value = item.nonBillableTime;
+    if (value > 0) {
+      const legendItem = document.createElement('div');
+      legendItem.classList.add('legend-item');
+  
+      // Create the color block
+      const colorBlock = document.createElement('span');
+      colorBlock.classList.add('color-block');
+      colorBlock.style.backgroundColor = nonBillableDonutChart.data.datasets[0].backgroundColor[index];
+      legendItem.appendChild(colorBlock);
+  
+      // Add the project type label
+      const labelText = document.createElement('span');
+      labelText.textContent = item.projectType;
+      legendItem.appendChild(labelText);
+  
+      legendContainer.appendChild(legendItem);
+    }
+  });
+  
+  
+  
+  </script>
 
   
   {% endblock %}
