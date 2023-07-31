@@ -18,7 +18,7 @@ To run this project, you need to have Python 3 installed on your machine. You ca
 * Setup a virtual environment
 `python3 -m venv venv`
 * then run
-`source myvenv/bin/activate`
+`source venv/bin/activate`
 * Once activated, you should see the name of your virtual environment in the terminal prompt. You can now install packages and dependencies within this virtual environment without affecting the rest of your system.
 * in the terminal - Navigate to the project directory:
 `pip3 install -r requirements.txt`
@@ -44,7 +44,7 @@ To run the app locally, use the following command:
 In the terminal on first run, or first launch, run this command
 
 copy code
-`export FLASK_APP=project`
+`export FLASK_APP=main.py`
 
 then run
 `flask run`
