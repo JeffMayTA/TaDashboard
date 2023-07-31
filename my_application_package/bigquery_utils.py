@@ -29,7 +29,9 @@ def fetch_utilization_data(start_date, end_date):
                 Digital_Utilization.Billable,
                 Digital_Utilization.Project_Type,
                 employee.Rate_Goal,
-                employee.Full_Time
+                employee.Full_Time,
+                employee.photo_url
+
             FROM
                 `timesheet-data-290519.Utilization.Digital-Utilization` AS Digital_Utilization
             JOIN
@@ -37,10 +39,11 @@ def fetch_utilization_data(start_date, end_date):
             ON
                 Digital_Utilization.User_Full_Name = employee.User_Full_Name
             WHERE
-                Date_Worked BETWEEN '{start_date}' AND '{end_date}'
+               Date_Worked BETWEEN '{start_date}' AND '{end_date}'
             ORDER BY
                 Digital_Utilization.User_Full_Name;
             """
+          
         df = pd.read_gbq(query, project_id=project, credentials=credentials)
         return df
     except Exception as e:
