@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Utilization{% endblock %}
+{% block content %}
+<body class="g-sidenav-show h-100 bg-gray-100">
+ {% include "sidenav.html" %}
+ <h2>Timesheets Submitted On Time</h2>
+
+<form method="post" action="{{ url_for('tenadams.timesheets') }}" class="timesheets-form">
+    <div class="row align-items-end">
+        <div class="col-lg-2 col-md-4 col-sm-6">
+          <div class="form-group">
+            <label for="department">Department:</label>
+            <select id="department" name="department" class="form-control">
+              <option value="">Select a department</option>
+              {% for dep in departments %}
+              <option value="{{ dep }}" {% if dep == request.form.get('department') %}selected{% endif %}>{{ dep }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+          <div class="form-group">
+            <label for="user">User:</label>
+            <select id="user" name="user" class="form-control">
+              <option value="">Select a user</option>
+              {% for user in users %}
+              {% if not selected_department or user['User_Department'] == selected_department %}
+              <option value="{{ user['User_Full_Name'] }}" data-department="{{ user['User_Department'] }}" {% if user['User_Full_Name'] == request.form.get('user') %}selected{% endif %}>{{ user['User_Full_Name'] }}</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+        </div>    
+        <div class="col-lg-2 col-md-4 col-sm-6">
+          <div class="form-group">
+            <button class="btn btn-primary btn-block" type="submit" style="margin-top: 31px;">Filter</button>
+          </div>
+        </div>
+      </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>User Name</th> <!-- Combined header -->
+            {% for week in data[first_key]['values'].keys() %}
+                <th>Week of<br />{{ week }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for user, info in data.items() %}
+            <tr>
+                <td>
+                    <img src="{{ info['photo_url'] }}" class="avatar avatar-sm me-3" alt="User's Profile Photo" />
+                    {{ user }} <!-- Combined photo and username -->
+                </td>
+                {% for percentage in info['values'].values() %}
+                    <td>{{ (percentage * 100)|round(1) }}%</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
