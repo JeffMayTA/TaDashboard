@@ -3,8 +3,6 @@
 {% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
 
 {% block content %}
-{% include "sidenav.html" %}
-
 <h1>Manage Menu Items</h1>
 
 <div class="table-responsive">
@@ -65,6 +63,5 @@
 <form action="{{ url_for('admin.create_menu_item') }}" method="GET">
   <button type="submit" class="btn btn-primary">Add New Menu Item</button>
 </form>
-{% include '_corejs.html' %}
-{% include '_loadlast.html' %}
+    {% include '_corejs.html' %}
 {% endblock %}

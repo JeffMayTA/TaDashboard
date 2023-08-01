@@ -3,42 +3,39 @@
 {% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
 
 {% block content %}
-  {% include "sidenav.html" %}
-<h1>Create New User</h1>
-<p>this page still need formatted</p>
+    <h1>Create New User</h1>
+    <p>this page still need formatted</p>
 
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.fname.label }}<br>
-        {{ form.fname(size=20) }}
-    </p>
-    <p>
-        {{ form.lname.label }}<br>
-        {{ form.lname(size=20) }}
-    </p>
-    <p>
-        {{ form.email.label }}<br>
-        {{ form.email(size=20) }}
-    </p>
-    <p>
-        {{ form.password.label }}<br>
-        {{ form.password(size=20) }}
-    </p>
-    <p>
-        {{ form.roles.label }}<br>
-        {{ form.roles() }}
-    </p>
-    <p>
-        {{ form.clients.label }}<br>
-        {{ form.clients() }}
-    </p>
-    <p>
-        <button type="submit" class="btn btn-primary">Create User</button>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.fname.label }}<br>
+            {{ form.fname(size=20) }}
+        </p>
+        <p>
+            {{ form.lname.label }}<br>
+            {{ form.lname(size=20) }}
+        </p>
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(size=20) }}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=20) }}
+        </p>
+        <p>
+            {{ form.roles.label }}<br>
+            {{ form.roles() }}
+        </p>
+        <p>
+            {{ form.clients.label }}<br>
+            {{ form.clients() }}
+        </p>
+        <p>
+            <button type="submit" class="btn btn-primary">Create User</button>
+        </p>
+    </form>
 
-    </p>
-</form>
-
-{% include '_corejs.html' %}
-{% include '_loadlast.html' %}
+    {% include '_corejs.html' %}
 {% endblock %}

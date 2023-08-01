@@ -1,47 +1,48 @@
-{% extends "base.html" %}
+{% extends "base_auth.html" %}
 {% block title %}Login{% endblock %}
+
 {% block content %}
-{% include 'authformhead.html' %}
-                  <h4 class="font-weight-bolder">Sign In</h4>
-                  <p class="mb-0">Enter your email and password to sign in</p>
+  <div class="card card-plain">
+    <div class="card-header pb-0 text-start">
+      <h4 class="font-weight-bolder">Sign In</h4>
+      <p class="mb-0">Enter your email and password to sign in</p>
+    </div>
+    <div class="card-body">
+      <form role="form" method="POST" action="{{ url_for('auth.login') }}">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+          {{ form.email(class="form-control form-control-lg", placeholder="Email", aria_label="Email") }}
+        </div>
+        <div class="mb-3">
+          {{ form.password(class="form-control form-control-lg", placeholder="Password", aria_label="Password") }}
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              {% if category == 'danger' %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
                 </div>
-                <div class="card-body">
-                  <form role="form" method="POST" action="{{ url_for('auth.login') }}">
-                    {{ form.hidden_tag() }}
-                    <div class="mb-3">
-                      {{ form.email(class="form-control form-control-lg", placeholder="Email", aria_label="Email") }}
-                    </div>
-                    <div class="mb-3">
-                      {{ form.password(class="form-control form-control-lg", placeholder="Password", aria_label="Password") }}
-                    </div>
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                      {% for category, message in messages %}
-                        {% if category == 'danger' %}
-                          <div class="alert alert-{{ category }}">
-                            {{ message }}
-                          </div>
-                        {% endif %}
-                      {% endfor %}
-                    {% endif %}
-                  {% endwith %}
-                    <div class="form-check form-switch">
-                      {{ form.remember_me(class="form-check-input", id="rememberMe") }} {# Render the "Remember me" checkbox #}
-                      <label class="form-check-label" for="rememberMe">Remember me</label>
-                    </div>
-                    <div class="text-center">
-                      <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign in</button>
-                    </div>
-                  </form>
-                </div>
-                <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                  <p class="mb-4 text-sm mx-auto">
-                   Having Trouble?
-                    <a href="{{ url_for('auth.forgot_password') }}" class="text-primary font-weight-bold">Reset your Password</a>
-                  </p>
-                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <div class="form-check form-switch">
+          {{ form.remember_me(class="form-check-input", id="rememberMe") }} {# Render the "Remember me" checkbox #}
+          <label class="form-check-label" for="rememberMe">Remember me</label>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign in</button>
+        </div>
+      </form>
+    </div>
+    <div class="card-footer text-center pt-0 px-lg-2 px-1">
+      <p class="mb-4 text-sm mx-auto">
+        Having Trouble?
+        <a href="{{ url_for('auth.forgot_password') }}" class="text-primary font-weight-bold">Reset your Password</a>
+      </p>
+    </div>
+  </div>
 
-            {% include 'authformfooter.html' %}
   {% include '_corejs.html' %}
-
-  {% endblock %}
+{% endblock %}

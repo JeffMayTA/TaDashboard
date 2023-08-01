@@ -3,7 +3,6 @@
 {% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
 
 {% block content %}
-  {% include "sidenav.html" %}
 <h1>Edit User</h1>
 <p>this page still need formatted</p>
 <form method="post" action="{{ url_for('admin.edit_user', id=user.id) }}">
@@ -44,6 +43,5 @@
     </p>
 </form>
 
-{% include '_corejs.html' %}
-{% include '_loadlast.html' %}
+  {% include '_corejs.html' %}
 {% endblock %}

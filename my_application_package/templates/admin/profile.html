@@ -3,7 +3,6 @@
 {% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
 
 {% block content %}
-  {% include "sidenav.html" %}
   <h1>Profile</h1>
   <p>this page still need formatted</p>
   {% if user.profile_photo_url %}
@@ -24,6 +23,5 @@
     </ul>
     </p>
 
-{% include '_corejs.html' %}
-{% include '_loadlast.html' %}
+  {% include '_corejs.html' %}
 {% endblock %}
