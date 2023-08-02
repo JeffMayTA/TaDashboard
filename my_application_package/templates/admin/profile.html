@@ -3,25 +3,47 @@
 {% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
 
 {% block content %}
-  <h1>Profile</h1>
-  <p>this page still need formatted</p>
-  {% if user.profile_photo_url %}
-  <!-- Display the user's profile photo -->
-  <img src="{{ user.profile_photo_url }}" alt="User's Profile Photo" width="200">
-    {% else %}
-    <!-- Display the default fallback image -->
-    <img src="/static/assets/img/default_profile_photo.jpg" alt="Default Profile Photo" width="200">
-    {% endif %}
-  <p>Email: {{ user.email }}</p>
-  <p>First Name: {{ user.fname }}</p>
-  <p>Last Name: {{ user.lname }}</p>
-  <p>Roles:
-    <ul>
-      {% for role in user.roles %}
-        <li>{{ role.name }}</li>
-      {% endfor %}
-    </ul>
-    </p>
+  <div class="row">
+    <div class="col position-relative z-index-2">
+      <div class="card card-plain mb-4">
+        <div class="card-body p-3">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="d-flex flex-column h-100">
+                <h2 class="font-weight-bolder mb-0">Profile</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body p-3">
+              {% if user.profile_photo_url %}
+                <!-- Display the user's profile photo -->
+                <img src="{{ user.profile_photo_url }}" alt="User's Profile Photo" width="200">
+              {% else %}
+                <!-- Display the default fallback image -->
+                <img src="/static/assets/img/default_profile_photo.jpg" alt="Default Profile Photo" width="200">
+              {% endif %}
+              <p>Email: {{ user.email }}</p>
+              <p>First Name: {{ user.fname }}</p>
+              <p>Last Name: {{ user.lname }}</p>
+              <p>Roles:
+                <ul>
+                  {% for role in user.roles %}
+                    <li>{{ role.name }}</li>
+                  {% endfor %}
+                </ul>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
 
   {% include '_corejs.html' %}
 {% endblock %}
