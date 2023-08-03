@@ -20,7 +20,7 @@ def ta_home():
 @login_required
 def utilization():
     breadcrumb = [
-        {'name': 'Welcome', 'url': url_for('index')},
+        {'name': 'Ten Adams', 'url': url_for('index')},
         {'name': 'Utilization', 'url': url_for('tenadams.utilization')}
     ]
     start_date_str = None
@@ -67,6 +67,11 @@ def utilization():
 @tenadams.route('/timesheets', methods=['GET', 'POST'])
 @login_required
 def timesheets():
+    breadcrumb = [
+        {'name': 'Ten Adams', 'url': url_for('index')},
+        {'name': 'Timesheets', 'url': url_for('tenadams.timesheets')}
+    ]
+    
     department = request.form.get('department')
     user = request.form.get('user')
 
@@ -118,7 +123,7 @@ def timesheets():
     
     first_key = next(iter(data.keys()))
 
-    return render_template('tenadams/timesheets.html', data=data, first_key=first_key, departments=departments, users=users, selected_department=department)
+    return render_template('tenadams/timesheets.html', data=data, first_key=first_key, departments=departments, users=users, selected_department=department, breadcrumb=breadcrumb)
 
 @tenadams.route('/nonbillable', methods=['GET', 'POST'])
 @login_required
