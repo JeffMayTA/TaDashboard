@@ -1,67 +1,109 @@
 {% extends "base.html" %}
-{% block title %}Utilization{% endblock %}
-{% block content %}
-<body class="g-sidenav-show h-100 bg-gray-100">
- {% include "sidenav.html" %}
- <h2>Timesheets Submitted On Time</h2>
+{% block title %}Timesheets{% endblock %}
+{% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
 
-<form method="post" action="{{ url_for('tenadams.timesheets') }}" class="timesheets-form">
-    <div class="row align-items-end">
-        <div class="col-lg-2 col-md-4 col-sm-6">
-          <div class="form-group">
-            <label for="department">Department:</label>
-            <select id="department" name="department" class="form-control">
-              <option value="">Select a department</option>
-              {% for dep in departments %}
-              <option value="{{ dep }}" {% if dep == request.form.get('department') %}selected{% endif %}>{{ dep }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="col-lg-2 col-md-4 col-sm-6">
-          <div class="form-group">
-            <label for="user">User:</label>
-            <select id="user" name="user" class="form-control">
-              <option value="">Select a user</option>
-              {% for user in users %}
-              {% if not selected_department or user['User_Department'] == selected_department %}
-              <option value="{{ user['User_Full_Name'] }}" data-department="{{ user['User_Department'] }}" {% if user['User_Full_Name'] == request.form.get('user') %}selected{% endif %}>{{ user['User_Full_Name'] }}</option>
-              {% endif %}
-              {% endfor %}
-            </select>
-          </div>
-        </div>    
-        <div class="col-lg-2 col-md-4 col-sm-6">
-          <div class="form-group">
-            <button class="btn btn-primary btn-block" type="submit" style="margin-top: 31px;">Filter</button>
+{% block content %}
+  <div class="row">
+    <div class="col position-relative z-index-2">
+      <div class="card card-plain mb-4">
+        <div class="card-body p-3">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="d-flex flex-column h-100">
+                <h2 class="font-weight-bolder mb-0">Timesheets</h2>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-</form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>User Name</th> <!-- Combined header -->
-            {% for week in data[first_key]['values'].keys() %}
-                <th>Week of<br />{{ week }}</th>
-            {% endfor %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for user, info in data.items() %}
-            <tr>
-                <td>
-                    <img src="{{ info['photo_url'] }}" class="avatar avatar-sm me-3" alt="User's Profile Photo" />
-                    {{ user }} <!-- Combined photo and username -->
-                </td>
-                {% for percentage in info['values'].values() %}
-                    <td>{{ (percentage * 100)|round(1) }}%</td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+      <div class="row">
+        <div class="col">
+          <div class="card mb-4">
+            <div class="card-body p-3">
+              <form method="post" action="{{ url_for('tenadams.timesheets') }}" class="timesheets-form">
+                <div class="row align-items-end">
+                  <div class="col-md-5 col-sm-6">
+                    <div class="form-group">
+                      <label for="department">Department:</label>
+                      <select id="department" name="department" class="form-control">
+                        <option value="">Select a department</option>
+                        {% for dep in departments %}
+                        <option value="{{ dep }}" {% if dep == request.form.get('department') %}selected{% endif %}>{{ dep }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-5 col-sm-6">
+                    <div class="form-group">
+                      <label for="user">User:</label>
+                      <select id="user" name="user" class="form-control">
+                        <option value="">Select a user</option>
+                        {% for user in users %}
+                        {% if not selected_department or user['User_Department'] == selected_department %}
+                        <option value="{{ user['User_Full_Name'] }}" data-department="{{ user['User_Department'] }}" {% if user['User_Full_Name'] == request.form.get('user') %}selected{% endif %}>{{ user['User_Full_Name'] }}</option>
+                        {% endif %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>    
+                  <div class="col-md-2 col-sm-12">
+                    <div class="form-group">
+                      <button class="btn btn-primary btn-block w-100 m-0" type="submit">Filter</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body p-3">
+              <h4 class="font-weight-bolder mb-0">Timesheets Submitted On Time</h4>
+            </div>
 
+            <div class="table-responsive">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7">User Full Name</th>
+                    {% for week in data[first_key]['values'].keys() %}
+                    <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Week of<br />{{ week }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for user, info in data.items() %}
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div>
+                          <img src="{{ info['photo_url'] }}" class="avatar avatar-sm me-3" alt="User's Profile Photo">
+                        </div>                          
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0">{{ user }}</h6>
+                        </div>
+                      </div>
+                    </td>
+                    {% for percentage in info['values'].values() %}
+                    <td class="text-center">
+                      <p class="font-weight-bold mb-0">{{ (percentage * 100)|round(1) }}%</p>
+                    </td>
+                    {% endfor %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include '_corejs.html' %}
 {% endblock %}
