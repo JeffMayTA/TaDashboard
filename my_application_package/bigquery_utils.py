@@ -81,16 +81,25 @@ def get_timesheets_data():
 
         query = f"""
             SELECT
-                User_Full_Name,
-                User_Department,
-                Date_Worked,
-                time_Entered_On_Time
+                Digital_Utilization.User_Full_Name,
+                Digital_Utilization.User_Department,
+                Digital_Utilization.Date_Worked,
+                Digital_Utilization.time_Entered_On_Time,
+                employee.photo_url
             FROM
-                `timesheet-data-290519.Utilization.Digital-Utilization`
+                `timesheet-data-290519.Utilization.Digital-Utilization` AS Digital_Utilization
+            JOIN
+                `timesheet-data-290519.Utilization.Employee-Data` employee
+            ON
+                Digital_Utilization.User_Full_Name = employee.User_Full_Name
             ORDER BY
-                User_Full_Name;
+                Digital_Utilization.User_Full_Name;
             """
+
         df = pd.read_gbq(query, project_id=project, credentials=credentials)
+
+        # Replace NaN values in photo_url column
+        df['photo_url'].fillna('/static/assets/img/default_profile_photo.jpg', inplace=True)
         return df
     except Exception as e:
         logging.error(f"Error in get_timesheets_data: {e}")

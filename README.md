@@ -57,6 +57,19 @@ You will have to exit and re-run app on any changes to code to see in local - re
 
 ## Deployment
 
-This project is currently deployed to Google App Engine 
+This project is currently deployed to Google App Engine
 
-more instructions to come - merging to master will not currently deplopy to app engine. deployment happens locally via gcloud app deploy once the SDK in installed locally and properly setup 
+more instructions to come - merging to master will not currently deplopy to app engine. deployment happens locally via gcloud app deploy once the SDK in installed locally and properly setup
+
+## Static markup
+
+### Ten Adams
+
+* Utilization - /markup/utilization.html (for example <http://127.0.0.1:5000/markup/utilization.html>)
+* Login - /markup/login.html (<http://127.0.0.1:5000/markup/login.html>)
+* 404 page - /markup/404.html  (<http://127.0.0.1:5000/markup/404.html>)
+* Welcome page = /markup/index.html (<http://127.0.0.1:5000/markup/index.html>)
+
+### Nuvance
+
+* Nuvance - Index - /markup/nuvance/index.html (<http://127.0.0.1:5000/markup/nuvance/index.html>)

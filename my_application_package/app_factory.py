@@ -1,5 +1,5 @@
 import os
-from flask import Flask, redirect, url_for, render_template, request, flash, session, g
+from flask import Flask, redirect, url_for, render_template, request, flash, session, g, send_from_directory
 from flask_migrate import Migrate, upgrade
 from dotenv import load_dotenv
 from flask_login import login_required, current_user, LoginManager
@@ -28,14 +28,6 @@ def create_app():
     
     app.secret_key = os.environ.get('SECRET_KEY') or 'supersecretkey'
     
-    # Set the 'greeting' variable for each request
-    @app.before_request
-    def set_random_greeting():
-        if 'greeting' not in session:
-            session['greeting'] = random.choice(hellos)
-
-        # Store the greeting in 'g.greeting' for global access within the same request
-        g.greeting = session['greeting']
 
 # Check if the app is running in production
     if os.getenv('FLASK_ENV') == 'production':
@@ -95,7 +87,11 @@ def create_app():
         return render_template('index.html', photo_url=photo_url, quote=quote, author=author)
     
     
-    
+    @app.route('/markup/<path:filename>')
+    @login_required
+    def serve_markup(filename):
+        return send_from_directory(os.path.join(os.path.dirname(__file__), 'templates', 'markup'), filename)
+
     
     @app.route('/signup', methods=['GET', 'POST'])
     def signup():

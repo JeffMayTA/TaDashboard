@@ -1,410 +1,417 @@
 {% extends "base.html" %}
 {% block title %}Utilization{% endblock %}
+{% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
+
 {% block content %}
-<body class="g-sidenav-show h-100 bg-gray-100">
- {% include "sidenav.html" %}
-    <div class="container-fluid py-4 flex-grow-1 d-flex flex-column">
-      <div class="row">
-        <div class="col position-relative z-index-2">
-          <div class="card card-plain mb-4">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="d-flex flex-column h-100">
-                    <h2 class="font-weight-bolder mb-0">Utilization</h2>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+  <div class="row">
+    <div class="col position-relative z-index-2">
+      <div class="card card-plain mb-4">
+        <div class="card-body p-3">
           <div class="row">
-            <div class="col-md-4 mb-4">
-              <div class="card ">
-                <div class="card-body p-3">
-                  <div class="row">
-                    <div class="col-8">
-                      <div class="numbers">
-                        <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Hours</p>
-                        <h4 class="font-weight-bolder mb-0">
-                          {{ total_hours }}
-                        </h4>
-                      </div>
-                    </div>
-                    <div class="col-4 text-end">
-                      <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                        <i class="far fa-clock text-lg opacity-10" aria-hidden="true"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 mb-4">
-              <div class="card ">
-                <div class="card-body p-3">
-                  <div class="row">
-                    <div class="col-8">
-                      <div class="numbers">
-                        <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Billable Hours</p>
-                        <h4 class="font-weight-bolder mb-0">
-                          {{ total_billable }}
-                        </h4>
-                      </div>
-                    </div>
-                    <div class="col-4 text-end">
-                      <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                        <i class="fas fa-dollar-sign text-lg opacity-10" aria-hidden="true"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 mb-4">
-              <div class="card ">
-                <div class="card-body p-3">
-                  <div class="row">
-                    <div class="col-8">
-                      <div class="numbers">
-                        <p class="mb-0 text-sm text-capitalize font-weight-bold">Overall Utilization</p>
-                        <h4 class="font-weight-bolder mb-0">
-                          {{ overall_utilization_rate_formatted }}
-                        </h4>
-                      </div>
-                    </div>
-                    <div class="col-4 text-end">
-                      <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                        <i class="fas fa-chart-line text-lg opacity-10" aria-hidden="true"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <form method="post" action="{{ url_for('tenadams.utilization') }}" class="utilization-form">
-            <div class="row align-items-end">
-              <div class="col-lg-2 col-md-4 col-sm-6">
-                <div class="form-group">
-                  <label for="start_date">Start Date:</label>
-                  <input type="text" class="form-control datepicker" id="start_date" name="start_date" value="{{ start_date }}" required>
-                </div>
-              </div>
-              <div class="col-lg-2 col-md-4 col-sm-6">
-                <div class="form-group">
-                  <label for="end_date">End Date:</label>
-                  <input type="text" class="form-control datepicker" id="end_date" name="end_date" value="{{ end_date }}" required>
-                </div>
-              </div>
-              <div class="col-lg-2 col-md-4 col-sm-6">
-                <div class="form-group">
-                  <label for="department">Department:</label>
-                  <select id="department" name="department" class="form-control">
-                    <option value="">Select a department</option>
-                    {% for dep in departments %}
-                    <option value="{{ dep }}" {% if dep == request.form.get('department') %}selected{% endif %}>{{ dep }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-              </div>
-              <div class="col-lg-2 col-md-4 col-sm-6">
-                <div class="form-group">
-                  <label for="user">User:</label>
-                  <select id="user" name="user" class="form-control">
-                    <option value="">Select a user</option>
-                    {% for user in users %}
-                    {% if not selected_department or user['User_Department'] == selected_department %}
-                    <option value="{{ user['User_Full_Name'] }}" data-department="{{ user['User_Department'] }}" {% if user['User_Full_Name'] == request.form.get('user') %}selected{% endif %}>{{ user['User_Full_Name'] }}</option>
-                    {% endif %}
-                    {% endfor %}
-                  </select>
-                </div>
-              </div>    
-              <div class="col-lg-2 col-md-4 col-sm-6">
-                <div class="form-group">
-                  <button class="btn btn-primary btn-block" type="submit" style="margin-top: 31px;">Filter</button>
-                </div>
-              </div>
-            </div>
-          </form>
-
-          <!-- Utilization Section -->
-          {% if not utilization_df.empty %}
-
-          <div class="row">
-            <div class="col">
-              <div class="card">
-                <div class="card-body p-3">
-                  <h4 class="font-weight-bolder mb-0">Utilization by Person</h4>
-                </div>
-                <div class="table-responsive">
-                  <table class="table align-items-center mb-0">
-                    <thead>
-                      <tr>
-                        <th class="text-uppercase text-xxs font-weight-bolder opacity-7">User Full Name</th>
-                        <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Total Hours</th>
-                        <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Billable Hours</th>
-                        <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Utilization Rate</th>
-                        <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Rate Goal</th>
-                        <th class="text-end text-uppercase text-xxs font-weight-bolder opacity-7">+/- Target</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for index, row in utilization_df.iterrows() %}
-                      <tr>
-                        <td>
-                          <div class="d-flex px-2 py-1">
-                            <div>
-                              <img src="{{ row['photo_url'] }}" class="avatar avatar-sm me-3" alt="User's Profile Photo">
-                          </div>                          
-                            <div class="d-flex flex-column justify-content-center">
-                              <h6 class="mb-0">{{ row['User_Full_Name'] }}</h6>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-center">
-                          <p class="font-weight-bold mb-0">{{ row['total_actual_hours'] }}</p>
-                        </td>
-                        <td class="text-center">
-                          <p class="font-weight-bold mb-0">{{ row['total_billable_hours'] }}</p>
-                        </td>
-                        <td class="text-center">
-                          <p class="font-weight-bold mb-0">{{ '{:.1f}'.format(row['utilization_rate'] * 100) }}%</p>
-                        </td>
-                        <td class="text-center">
-                          <p class="font-weight-bold mb-0">{{ '{:.1f}'.format(row['Rate_Goal'] * 100) }}%</p>
-                        </td>
-                        <td class="text-end px-4">
-                          <p class="font-weight-bold mb-0">{{ '{:.1f}'.format((row['utilization_rate'] - row['Rate_Goal']) * 100) }}% 
-                            <i class="{{
-                              'text-success fas fa-circle-dot' if row['Rate_Goal'] - row['utilization_rate'] < 0 else
-                              'text-danger fas fa-circle-dot' if row['Rate_Goal'] - row['utilization_rate'] > 0.1 else
-                              'text-warning fas fa-circle-dot'
-                            }}"></i></p>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-         
-          <!-- Working Time Section -->
-<div class="row mt-4">
-  <div class="col-lg-5 mb-lg-0 mb-4">
-    <div class="card">
-      <div class="card-body p-3">
-        <h4 class="font-weight-bolder mb-0">Working Time</h4>
-      </div>
-      <div class="table-responsive">
-        <table class="table align-items-center mb-1">
-          <thead>
-            <tr>
-              <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">User Full Name</th>
-              <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">Working Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for row in working_time_df.itertuples() %}
-            <tr>
-              <td>
-                <div class="d-flex px-2 py-1">
-                  <div>
-                    <img src="{{ row['photo_url'] }}" class="avatar avatar-sm me-3">
-                  </div>
-                  <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0">{{ row.User_Full_Name }}</h6>
-                  </div>
-                </div>
-              </td>
-              <td class="px-3">
-                <p class="text-sm font-weight-bold mb-2">{{ '{:.1f}'.format(row.working_time * 100) }}%</p>
-                <div class="progress w-100">
-                  <div class="progress-bar bg-dark" role="progressbar" style="width: {{ '{:.1f}'.format(row.working_time * 100) }}%;" aria-valuenow="{{ '{:.1f}'.format(row.working_time * 100) }}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-{% endif %}
-<div class="col-lg-5 mb-lg-0 mb-4">
-  <div class="card z-index-2">
-    <div class="card-header pb-0">
-      <h6 class="m-0 font-weight-bold text-primary">Non-Billable Time Breakdown</h6>
-    </div>
-    <div class="card-body p-3 d-flex flex-wrap align-items-center"> <!-- Add flex-wrap and align-items-center -->
-      <div class="chart" style="flex: 1;"> <!-- Set flex: 1 to allow the chart to take available space -->
-        <canvas id="nonBillableDonutChart" class="chart-canvas" width="530" height="350"></canvas>
-      </div>
-      <div id="chart-legend" class="legend-container" style="flex: 1;"> <!-- Set flex: 1 to allow the legend to take available space -->
-        <!-- The legend items will be dynamically added here -->
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-      
-      <footer class="footer pt-3 mt-auto ">
-        <div class="container-fluid">
-          <div class="row align-items-center justify-content-lg-between">
-            <div class="col-lg-12 mb-lg-0 mb-4">
-              <div class="copyright text-center text-sm text-muted text-lg-start">
-                Copyright © Ten Adams, Inc. <script>document.write(new Date().getFullYear())</script>
+            <div class="col-lg-6">
+              <div class="d-flex flex-column h-100">
+                <h2 class="font-weight-bolder mb-0">Utilization</h2>
               </div>
             </div>
           </div>
         </div>
-      </footer>
-  </main>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="card ">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Hours</p>
+                    <h4 class="font-weight-bolder mb-0">
+                      {{ total_hours }}
+                    </h4>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="far fa-clock text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="card ">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Billable Hours</p>
+                    <h4 class="font-weight-bolder mb-0">
+                      {{ total_billable }}
+                    </h4>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="fas fa-dollar-sign text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="card ">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="mb-0 text-sm text-capitalize font-weight-bold">Overall Utilization</p>
+                    <h4 class="font-weight-bolder mb-0">
+                      {{ overall_utilization_rate_formatted }}
+                    </h4>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="fas fa-chart-line text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-{% include '_corejs.html' %}
-       <!-- Datepicker scripts --> 
-       <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
-       <script>
-         // Datepicker
-         if (document.querySelector('.datepicker')) {
-           flatpickr('.datepicker', {
-             mode: "single"
-           });
-         }
-        </script>
-  
-        <script>
-          // Register the plugin
-          Chart.register(ChartDataLabels);
-        
-          // Parse the JSON string passed from the backend
-          const nonBillableDataString = '{{ non_billable_data | safe }}';
-          let nonBillableData = [];
-          
-          if (nonBillableDataString) {
-            try {
-              nonBillableData = JSON.parse(nonBillableDataString);
-            } catch (error) {
-              console.error("Error parsing non_billable_data:", error);
-            }
-          }
-        
-        // Combine projectTypes and nonBillableTimes arrays into a single array of objects
-        const combinedData = nonBillableData.map((item, index) => ({
-          projectType: item.project_type,
-          nonBillableTime: item.non_billable_time
-        }));
-        
-        // Sort the combined array based on the nonBillableTimes values in descending order
-        combinedData.sort((a, b) => b.nonBillableTime - a.nonBillableTime);
-        
-        // Extract the sorted projectTypes and nonBillableTimes arrays from the sorted combined array
-        const sortedProjectTypes = combinedData.map(item => item.projectType);
-        const sortedNonBillableTimes = combinedData.map(item => item.nonBillableTime);
-        
-        
-          // Create a donut chart using Chart.js
-          const ctx = document.getElementById('nonBillableDonutChart').getContext('2d');
-          const nonBillableDonutChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-              labels: sortedProjectTypes,
-              datasets: [
-                {
-                  data: sortedNonBillableTimes,
-                  backgroundColor: [
-                    "#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF",
-                    "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493",
-                    "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00"
-                  ],
-                  borderWidth: 1,
-                },
-              ],
-            },
-            options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  cutoutPercentage: 70,
-                  plugins: {
-                      legend: {
-                          display: false
-                      },
-                      tooltip: {
-                          callbacks: {
-                              label: function(context) {
-                                  var dataset = context.dataset;
-                                  var index = context.dataIndex;
-                                  var data = context.chart.data;
-                                  var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
-                                      return previousValue + currentValue;
-                                  });
-                                  var currentValue = dataset.data[index];
-                                  var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
-                                  return data.labels[index] + ": " + percentage + "%";
-                              }
-                          }
-                      },
-                datalabels: {
-                  formatter: function(value, context) {
-                    var dataset = context.chart.data.datasets[context.datasetIndex];
-                    var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
-                      return previousValue + currentValue;
-                    });
-                    var percentage = Math.floor(((value / total) * 100) + 0.5);
-                
-                    // Only show labels for pie pieces with a percentage greater than or equal to 5%
-                    if (percentage >= 5 ) {
-                      return percentage + '%';
-                    } else {
-                      return null; // Return null to hide the label for smaller pie pieces
-                    }
-                  },
-                  color: '#fff',
-                  font: {
-                    size: 14,
-                    weight: 'bold',
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 5,
-                    shadowOffsetX: 2,
-                    shadowOffsetY: 2
-                  },
-                  anchor: 'center', // Change anchor to 'center'
-                  align: 'center', // Change align to 'center'
-                  offset: 0 // Set offset to 0
-                }
-                }
-            }
-        });
-        
-      // Manually create the legend with colors matching the chart
-      const legendContainer = document.getElementById('chart-legend');
-      combinedData.forEach((item, index) => {
-        const value = item.nonBillableTime;
-        if (value > 0) {
-          const legendItem = document.createElement('div');
-          legendItem.classList.add('legend-item');
+      <div class="row">
+        <div class="col">
+          <div class="card mb-4">
+            <div class="card-body p-3">
+              <form method="post" action="{{ url_for('tenadams.utilization') }}" class="utilization-form">
+                <div class="row align-items-end">
+                  <div class="col-lg-2 col-sm-6">
+                    <div class="form-group">
+                      <label for="start_date">Start Date:</label>
+                      <input type="text" class="form-control datepicker" id="start_date" name="start_date" value="{{ start_date }}" required>
+                    </div>
+                  </div>
+                  <div class="col-lg-2 col-sm-6">
+                    <div class="form-group">
+                      <label for="end_date">End Date:</label>
+                      <input type="text" class="form-control datepicker" id="end_date" name="end_date" value="{{ end_date }}" required>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-sm-6">
+                    <div class="form-group">
+                      <label for="department">Department:</label>
+                      <select id="department" name="department" class="form-control">
+                        <option value="">Select a department</option>
+                        {% for dep in departments %}
+                        <option value="{{ dep }}" {% if dep == request.form.get('department') %}selected{% endif %}>{{ dep }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-sm-6">
+                    <div class="form-group">
+                      <label for="user">User:</label>
+                      <select id="user" name="user" class="form-control">
+                        <option value="">Select a user</option>
+                        {% for user in users %}
+                        {% if not selected_department or user['User_Department'] == selected_department %}
+                        <option value="{{ user['User_Full_Name'] }}" data-department="{{ user['User_Department'] }}" {% if user['User_Full_Name'] == request.form.get('user') %}selected{% endif %}>{{ user['User_Full_Name'] }}</option>
+                        {% endif %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>    
+                  <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                      <button class="btn btn-primary btn-block w-100 m-0" type="submit">Filter</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          // Create the color block with a background color matching the chart's dataset
-          const colorBlock = document.createElement('span');
-          colorBlock.classList.add('color-block');
-          colorBlock.style.backgroundColor = nonBillableDonutChart.data.datasets[0].backgroundColor[index];
-          legendItem.appendChild(colorBlock);
+      <!-- Utilization Section -->
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body p-3">
+              <h4 class="font-weight-bolder mb-0">Utilization by Person</h4>
+            </div>
+            {% if not utilization_df.empty %}
+            <div class="table-responsive">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7">User Full Name</th>
+                    <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Total Hours</th>
+                    <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Billable Hours</th>
+                    <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Utilization Rate</th>
+                    <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Rate Goal</th>
+                    <th class="text-end text-uppercase text-xxs font-weight-bolder opacity-7">+/- Target</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for index, row in utilization_df.iterrows() %}
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div>
+                          <img src="{{ row['photo_url'] }}" class="avatar avatar-sm me-3" alt="User's Profile Photo">
+                      </div>                          
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0">{{ row['User_Full_Name'] }}</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <p class="font-weight-bold mb-0">{{ row['total_actual_hours'] }}</p>
+                    </td>
+                    <td class="text-center">
+                      <p class="font-weight-bold mb-0">{{ row['total_billable_hours'] }}</p>
+                    </td>
+                    <td class="text-center">
+                      <p class="font-weight-bold mb-0">{{ '{:.1f}'.format(row['utilization_rate'] * 100) }}%</p>
+                    </td>
+                    <td class="text-center">
+                      <p class="font-weight-bold mb-0">{{ '{:.1f}'.format(row['Rate_Goal'] * 100) }}%</p>
+                    </td>
+                    <td class="text-end px-4">
+                      <p class="font-weight-bold mb-0">{{ '{:.1f}'.format((row['utilization_rate'] - row['Rate_Goal']) * 100) }}% 
+                        <i class="{{
+                          'text-success fas fa-circle-dot' if row['Rate_Goal'] - row['utilization_rate'] < 0 else
+                          'text-danger fas fa-circle-dot' if row['Rate_Goal'] - row['utilization_rate'] > 0.1 else
+                          'text-warning fas fa-circle-dot'
+                        }}"></i></p>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
 
-          // Add the project type label
-          const labelText = document.createElement('span');
-          labelText.textContent = item.projectType;
-          legendItem.appendChild(labelText);
+      <!-- Working Time Section -->
+      <div class="row mt-4">
+        <div class="col-lg-5 mb-lg-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <h4 class="font-weight-bolder mb-0">Working Time</h4>
+            </div>
+            {% if not utilization_df.empty %}
+            <div class="table-responsive">
+              <table class="table align-items-center mb-1">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">User Full Name</th>
+                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">Working Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in working_time_df.itertuples() %}
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div>
+                          <img src="{{ row['photo_url'] }}" class="avatar avatar-sm me-3">
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0">{{ row.User_Full_Name }}</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-3">
+                      <p class="text-sm font-weight-bold mb-2">{{ '{:.1f}'.format(row.working_time * 100) }}%</p>
+                      <div class="progress w-100">
+                        <div class="progress-bar bg-dark" role="progressbar" style="width: {{ '{:.1f}'.format(row.working_time * 100) }}%;" aria-valuenow="{{ '{:.1f}'.format(row.working_time * 100) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      
+        <div class="col-lg-7">
+          <div class="card mb-4">
+            <div class="card-body p-3">
+              <h4 class="font-weight-bolder mb-3">Non-Billable Time Breakdown</h4>
+              <div class="row">
+                <div class="col-xxl-5 mb-4">
+                  <div class="chart">
+                    <canvas id="nonBillableDonutChart" class="chart-canvas"  height="300"></canvas>
+                  </div>
+                </div>
+                <div class="col-xxl-7">
+                  <div class="table-responsive">
+                    <table class="table align-items-center mb-0">
+                      <tbody id="chart-legend" class="legend-container">
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          legendContainer.appendChild(legendItem);
-        }
+  {% include '_corejs.html' %}
+  <!-- Datepicker scripts --> 
+  <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
+  <script>
+    // Datepicker
+    if (document.querySelector('.datepicker')) {
+      flatpickr('.datepicker', {
+        mode: "single"
       });
-        
-        
-        
-        </script>
+    }
+  </script>
+  
+  <script>
+    // Register the plugin
+    Chart.register(ChartDataLabels);
+  
+    // Parse the JSON string passed from the backend
+    const nonBillableDataString = '{{ non_billable_data | safe }}';
+    let nonBillableData = [];
+    
+    if (nonBillableDataString) {
+      try {
+        nonBillableData = JSON.parse(nonBillableDataString);
+      } catch (error) {
+        console.error("Error parsing non_billable_data:", error);
+      }
+    }
+  
+    // Combine projectTypes and nonBillableTimes arrays into a single array of objects
+    const combinedData = nonBillableData.map((item, index) => ({
+      projectType: item.project_type,
+      nonBillableTime: item.non_billable_time
+    }));
+    
+    // Sort the combined array based on the nonBillableTimes values in descending order
+    combinedData.sort((a, b) => b.nonBillableTime - a.nonBillableTime);
+    
+    // Extract the sorted projectTypes and nonBillableTimes arrays from the sorted combined array
+    const sortedProjectTypes = combinedData.map(item => item.projectType);
+    const sortedNonBillableTimes = combinedData.map(item => item.nonBillableTime);
+  
+  
+    // Create a donut chart using Chart.js
+    const ctx = document.getElementById('nonBillableDonutChart').getContext('2d');
+    const nonBillableDonutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: sortedProjectTypes,
+            datasets: [{
+                data: sortedNonBillableTimes,
+                backgroundColor: ["#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00"],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutoutPercentage: 70,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            var dataset = context.dataset;
+                            var index = context.dataIndex;
+                            var data = context.chart.data;
+                            var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                                return previousValue + currentValue;
+                            });
+                            var currentValue = dataset.data[index];
+                            var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                            return data.labels[index] + ": " + percentage + "%";
+                        }
+                    }
+                },
+          datalabels: {
+            formatter: function(value, context) {
+              var dataset = context.chart.data.datasets[context.datasetIndex];
+              var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                return previousValue + currentValue;
+              });
+              var percentage = Math.floor(((value / total) * 100) + 0.5);
+          
+              // Only show labels for pie pieces with a percentage greater than or equal to 5%
+              if (percentage >= 5 ) {
+                return percentage + '%';
+              } else {
+                return null; // Return null to hide the label for smaller pie pieces
+              }
+            },
+            color: '#fff',
+            font: {
+              size: 14,
+              weight: 'bold',
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+              shadowBlur: 5,
+              shadowOffsetX: 2,
+              shadowOffsetY: 2
+            },
+            anchor: 'center', // Change anchor to 'center'
+            align: 'center', // Change align to 'center'
+            offset: 0 // Set offset to 0
+          }
+          }
+      }
+  });
+  
+  // Manually create the legend
+  const legendContainer = document.getElementById('chart-legend');
+  combinedData.forEach((item, index) => {
+    const value = item.nonBillableTime;
+    if (value > 0) {
+      const legendItem = document.createElement('tr');
+      const legendItemData = document.createElement('td');
+      legendItem.appendChild(legendItemData);
 
+      const legendItemContent = document.createElement('div');
+      legendItemContent.classList.add('d-flex', 'px-2', 'py-0');
+      legendItemData.appendChild(legendItemContent);
+      
+  
+      // Create the color block
+      const colorBlock = document.createElement('span');
+      colorBlock.classList.add('badge', 'me-3', 'd-block');
+      colorBlock.style.backgroundColor = nonBillableDonutChart.data.datasets[0].backgroundColor[index];
+      legendItemContent.appendChild(colorBlock);
+  
+      // Add the project type label
+      const labelTextContain = document.createElement('div');
+      labelTextContain.classList.add('d-flex', 'flex-column', 'justify-content-center');
+      legendItemContent.appendChild(labelTextContain);
+
+      const labelText = document.createElement('h6');
+      labelText.classList.add('mb-0', 'text-sm');
+      labelText.textContent = item.projectType;
+      labelTextContain.appendChild(labelText);
+  
+      legendContainer.appendChild(legendItem);
+    }
+  });
+  </script>
   
   {% endblock %}
