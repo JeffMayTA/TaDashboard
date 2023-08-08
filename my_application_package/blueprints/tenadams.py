@@ -10,6 +10,7 @@ import pandas as pd
 # Create a blueprint
 tenadams = Blueprint('tenadams', __name__)
 
+
 # Define the root route for Ten Adams
 @tenadams.route('/')
 def ta_home():
