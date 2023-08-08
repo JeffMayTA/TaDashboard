@@ -36,10 +36,10 @@
                       <td class="w-100"><p class="font-weight-bold mb-0">{{ role.name }}</p></td>
                       <td>
                         <div class="d-flex">
-                          <a href="{{ url_for('admin.edit_role', role_id=role.id) }}" class="btn btn-sm btn-primary me-3">Edit</a>
+                          <a href="{{ url_for('admin.edit_role', role_id=role.id) }}" class="btn btn-sm btn-primary m-0 me-3">Edit</a>
                           <form action="{{ url_for('admin.delete_role', role_id=role.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this role?');">
                             <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-sm btn-danger m-0">Delete</button>
                           </form>
                         </div>
                       </td>
