@@ -13,3 +13,6 @@ __pycache__/
 .env
 .gcloudignore
 app.yaml
+
+# Ignore node_modules
+node_modules/
