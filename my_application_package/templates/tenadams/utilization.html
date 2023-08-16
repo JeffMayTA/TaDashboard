@@ -250,13 +250,35 @@
               <div class="row">
                 <div class="col-xxl-5 mb-4">
                   <div class="chart">
-                    <canvas id="nonBillableDonutChart" class="chart-canvas"  height="300"></canvas>
+                    <canvas id="non-billable-chart" class="chart-canvas"  height="300"></canvas>
                   </div>
                 </div>
                 <div class="col-xxl-7">
                   <div class="table-responsive">
                     <table class="table align-items-center mb-0">
-                      <tbody id="chart-legend" class="legend-container">
+                      <tbody id="non-billable-chart-legend" class="legend-container">
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-4">
+            <div class="card-body p-3">
+              <h4 class="font-weight-bolder mb-3">Billable Time Breakdown</h4>
+              <div class="row">
+                <div class="col-xxl-5 mb-4">
+                  <div class="chart">
+                    <canvas id="billable-chart" class="chart-canvas"  height="300"></canvas>
+                  </div>
+                </div>
+                <div class="col-xxl-7">
+                  <div class="table-responsive">
+                    <table class="table align-items-center mb-0">
+                      <tbody id="billable-chart-legend" class="legend-container">
                         
                       </tbody>
                     </table>
@@ -312,41 +334,41 @@
     const sortedNonBillableTimes = combinedData.map(item => item.nonBillableTime);
   
   
-    // Create a donut chart using Chart.js
-    const ctx = document.getElementById('nonBillableDonutChart').getContext('2d');
+    // Create a non-billable donut chart using Chart.js
+    const ctx = document.getElementById('non-billable-chart').getContext('2d');
     const nonBillableDonutChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: sortedProjectTypes,
-            datasets: [{
-                data: sortedNonBillableTimes,
-                backgroundColor: ["#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00"],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutoutPercentage: 70,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            var dataset = context.dataset;
-                            var index = context.dataIndex;
-                            var data = context.chart.data;
-                            var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
-                                return previousValue + currentValue;
-                            });
-                            var currentValue = dataset.data[index];
-                            var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
-                            return data.labels[index] + ": " + percentage + "%";
-                        }
-                    }
-                },
+      type: 'doughnut',
+      data: {
+        labels: sortedProjectTypes,
+        datasets: [{
+          data: sortedNonBillableTimes,
+          backgroundColor: ["#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00"],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutoutPercentage: 70,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                var dataset = context.dataset;
+                var index = context.dataIndex;
+                var data = context.chart.data;
+                var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                  return previousValue + currentValue;
+                });
+                var currentValue = dataset.data[index];
+                var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                return data.labels[index] + ": " + percentage + "%";
+              }
+            }
+          },
           datalabels: {
             formatter: function(value, context) {
               var dataset = context.chart.data.datasets[context.datasetIndex];
@@ -375,43 +397,144 @@
             align: 'center', // Change align to 'center'
             offset: 0 // Set offset to 0
           }
-          }
+        }
       }
-  });
+    });
   
-  // Manually create the legend
-  const legendContainer = document.getElementById('chart-legend');
-  combinedData.forEach((item, index) => {
-    const value = item.nonBillableTime;
-    if (value > 0) {
-      const legendItem = document.createElement('tr');
-      const legendItemData = document.createElement('td');
-      legendItem.appendChild(legendItemData);
+    // Manually create the non-billable legend
+    const nbLegendContainer = document.getElementById('non-billable-chart-legend');
+    combinedData.forEach((item, index) => {
+      const value = item.nonBillableTime;
+      if (value > 0) {
+        const legendItem = document.createElement('tr');
+        const legendItemData = document.createElement('td');
+        legendItem.appendChild(legendItemData);
 
-      const legendItemContent = document.createElement('div');
-      legendItemContent.classList.add('d-flex', 'px-2', 'py-0');
-      legendItemData.appendChild(legendItemContent);
-      
-  
-      // Create the color block
-      const colorBlock = document.createElement('span');
-      colorBlock.classList.add('badge', 'me-3', 'd-block');
-      colorBlock.style.backgroundColor = nonBillableDonutChart.data.datasets[0].backgroundColor[index];
-      legendItemContent.appendChild(colorBlock);
-  
-      // Add the project type label
-      const labelTextContain = document.createElement('div');
-      labelTextContain.classList.add('d-flex', 'flex-column', 'justify-content-center');
-      legendItemContent.appendChild(labelTextContain);
+        const legendItemContent = document.createElement('div');
+        legendItemContent.classList.add('d-flex', 'px-2', 'py-0');
+        legendItemData.appendChild(legendItemContent);
+        
+    
+        // Create the color block
+        const colorBlock = document.createElement('span');
+        colorBlock.classList.add('badge', 'me-3', 'd-block');
+        colorBlock.style.backgroundColor = nonBillableDonutChart.data.datasets[0].backgroundColor[index];
+        legendItemContent.appendChild(colorBlock);
+    
+        // Add the project type label
+        const labelTextContain = document.createElement('div');
+        labelTextContain.classList.add('d-flex', 'flex-column', 'justify-content-center');
+        legendItemContent.appendChild(labelTextContain);
 
-      const labelText = document.createElement('h6');
-      labelText.classList.add('mb-0', 'text-sm');
-      labelText.textContent = item.projectType;
-      labelTextContain.appendChild(labelText);
-  
-      legendContainer.appendChild(legendItem);
-    }
-  });
+        const labelText = document.createElement('h6');
+        labelText.classList.add('mb-0', 'text-sm');
+        labelText.textContent = item.projectType;
+        labelTextContain.appendChild(labelText);
+    
+        nbLegendContainer.appendChild(legendItem);
+      }
+    });
+
+    // Create a non-billable donut chart using Chart.js
+    const ctx2 = document.getElementById('billable-chart').getContext('2d');
+    const billableDonutChart = new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: sortedProjectTypes,
+        datasets: [{
+          data: sortedNonBillableTimes,
+          backgroundColor: ["#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00"],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutoutPercentage: 70,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                var dataset = context.dataset;
+                var index = context.dataIndex;
+                var data = context.chart.data;
+                var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                  return previousValue + currentValue;
+                });
+                var currentValue = dataset.data[index];
+                var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                return data.labels[index] + ": " + percentage + "%";
+              }
+            }
+          },
+          datalabels: {
+            formatter: function(value, context) {
+              var dataset = context.chart.data.datasets[context.datasetIndex];
+              var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                return previousValue + currentValue;
+              });
+              var percentage = Math.floor(((value / total) * 100) + 0.5);
+          
+              // Only show labels for pie pieces with a percentage greater than or equal to 5%
+              if (percentage >= 5 ) {
+                return percentage + '%';
+              } else {
+                return null; // Return null to hide the label for smaller pie pieces
+              }
+            },
+            color: '#fff',
+            font: {
+              size: 14,
+              weight: 'bold',
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+              shadowBlur: 5,
+              shadowOffsetX: 2,
+              shadowOffsetY: 2
+            },
+            anchor: 'center', // Change anchor to 'center'
+            align: 'center', // Change align to 'center'
+            offset: 0 // Set offset to 0
+          }
+        }
+      }
+    });
+
+    // Manually create the billable legend
+    const bLegendContainer = document.getElementById('billable-chart-legend');
+    combinedData.forEach((item, index) => {
+      const value = item.nonBillableTime;
+      if (value > 0) {
+        const legendItem = document.createElement('tr');
+        const legendItemData = document.createElement('td');
+        legendItem.appendChild(legendItemData);
+
+        const legendItemContent = document.createElement('div');
+        legendItemContent.classList.add('d-flex', 'px-2', 'py-0');
+        legendItemData.appendChild(legendItemContent);
+        
+    
+        // Create the color block
+        const colorBlock = document.createElement('span');
+        colorBlock.classList.add('badge', 'me-3', 'd-block');
+        colorBlock.style.backgroundColor = billableDonutChart.data.datasets[0].backgroundColor[index];
+        legendItemContent.appendChild(colorBlock);
+    
+        // Add the project type label
+        const labelTextContain = document.createElement('div');
+        labelTextContain.classList.add('d-flex', 'flex-column', 'justify-content-center');
+        legendItemContent.appendChild(labelTextContain);
+
+        const labelText = document.createElement('h6');
+        labelText.classList.add('mb-0', 'text-sm');
+        labelText.textContent = item.projectType;
+        labelTextContain.appendChild(labelText);
+    
+        bLegendContainer.appendChild(legendItem);
+      }
+    });
   </script>
   
   {% endblock %}
