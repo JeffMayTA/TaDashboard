@@ -49,7 +49,7 @@ class Role(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
-    menu_items = db.relationship('MenuItem', secondary=role_menu_items, backref='assigned_roles_rel')
+    menu_items = db.relationship('MenuItem', secondary=role_menu_items, back_populates='roles')
 
     def add_menu_item(self, menu_item):
         if not self.has_menu_item(menu_item):
@@ -73,10 +73,11 @@ class MenuItem(db.Model):
     parent_menu_item = db.relationship('MenuItem', remote_side=[id])
         # Add the icon_class column to hold the CSS class name of the icon
     icon_class = db.Column(db.String(50))
+    roles = db.relationship('Role', secondary=role_menu_items, back_populates='menu_items')
+
 
     client = db.relationship('Client', backref='menu_items', foreign_keys=[client_id])
-        # New relationship with roles
-    assigned_roles = db.relationship('Role', secondary=role_menu_items, backref='menu_items_rel')
+
 
     def add_role(self, role):
         if not self.has_role(role):
