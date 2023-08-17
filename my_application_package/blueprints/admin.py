@@ -67,8 +67,9 @@ def delete_user(id):
 def edit_user(id):
     breadcrumb = [
         {'name': 'Welcome', 'url': url_for('index')},
-        {'name': 'Edit User', 'url': url_for('admin.edit_user')}
+        {'name': 'Edit User', 'url': url_for('admin.edit_user', id=id)}
     ]
+
     user = User.query.get(id)
     if not user:
         flash('User not found.', 'error')
@@ -187,18 +188,33 @@ def edit_menu_item(menu_item_id):
     form = MenuItemForm(obj=menu_item)
 
     if form.validate_on_submit():
-        form.populate_obj(menu_item)
+        # Manually assign the attributes of the menu_item object.
+        menu_item.label = form.label.data
+        menu_item.target_url = form.target_url.data
+        menu_item.icon_class = form.icon_class.data
+
+        # Handle the parent_menu_item assignment
+        if form.parent_menu_item.data == 0:
+            menu_item.parent_menu_item = None
+        else:
+            parent = MenuItem.query.get(form.parent_menu_item.data)
+            menu_item.parent_menu_item = parent
+
+        # Manually handle the roles assignment
+        menu_item.roles = form.roles.data
+
+        # Handle the client field
+        menu_item.client = form.client.data
+
+        db.session.add(menu_item)
         db.session.commit()
         flash('Menu item has been updated.', 'success')
         return redirect(url_for('admin.manage_menu_items'))
-    
-   # Populate the choices for the parent menu item and roles fields
-    form.parent_menu_item.choices = [(item.id, item.label) for item in MenuItem.query.filter(MenuItem.id != menu_item.id).all()]
-    form.roles.choices = [(role.id, role.name) for role in Role.query.all()]
 
+    # Populate the choices for the parent menu item excluding the current menu item
+    form.parent_menu_item.choices = [(0, 'None')] + [(item.id, item.label) for item in MenuItem.query.filter(MenuItem.id != menu_item.id).all()]
 
     return render_template('admin/edit_menu_item.html', form=form, menu_item=menu_item)
-
 
 @admin_bp.route('/menu_items/<int:menu_item_id>/delete', methods=['POST'])
 @login_required

@@ -50,11 +50,16 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if menu_item.role %}
-                                    {{ menu_item.role.name }}
-                                    {% else %}
-                                    N/A
-                                    {% endif %}
+                                  {% if menu_item.roles %}
+                                  <!-- List all roles for a menu item -->
+                                  {% set role_names = [] %}
+                                  {% for role in menu_item.roles %}
+                                    {% set _ = role_names.append(role.name) %}
+                                  {% endfor %}
+                                  {{ ', '.join(role_names) }}
+                                  {% else %}
+                                  N/A
+                                  {% endif %}
                                 </td>
                                 <td>
                                     {% if menu_item.client %}
@@ -65,7 +70,7 @@
                                 </td>
                                 <td>
                                     <a href="{{ url_for('admin.edit_menu_item', menu_item_id=menu_item.id) }}" class="btn btn-sm btn-primary">Edit</a>
-                                    <form action="{{ url_for('admin.delete_menu_item', menu_item_id=menu_item.id) }}" method="POST">
+                                    <form action="{{ url_for('admin.delete_menu_item', menu_item_id=menu_item.id) }}" method="POST" style="display: inline;">
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this menu item?')">Delete</button>
                                     </form>
                                 </td>

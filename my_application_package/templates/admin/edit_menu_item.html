@@ -36,8 +36,15 @@
                         {{ form.parent_menu_item.label }} {{ form.parent_menu_item(class="form-control") }}
                     </div>
                     <div class="form-group">
-                        {{ form.roles.label }} {{ form.roles(class="form-control", multiple="multiple") }}
-                    </div>
+                      <p>
+                          {{ form.roles.label }}<br>
+                          {% for choice, label, checked in form.roles.iter_choices() %}
+                              <div>
+                                  <input type="checkbox" name="{{ form.roles.name }}" value="{{ choice }}" {% if checked %}checked{% endif %}>
+                                  {{ label }}
+                              </div>
+                          {% endfor %}
+                      </p>                    </div>
                     <div class="form-group">
                         {{ form.client.label }} {{ form.client(class="form-control") }}
                     </div>
