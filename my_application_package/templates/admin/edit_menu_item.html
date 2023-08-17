@@ -40,7 +40,8 @@
                           {{ form.roles.label }}<br>
                           {% for choice, label, checked in form.roles.iter_choices() %}
                               <div>
-                                  <input type="checkbox" name="{{ form.roles.name }}" value="{{ choice }}" {% if checked %}checked{% endif %}>
+                                 <!-- adding checking box control--> 
+                                 <input type="checkbox" name="{{ form.roles.name }}" value="{{ choice }}" {% if checked %}checked{% endif %}>
                                   {{ label }}
                               </div>
                           {% endfor %}
