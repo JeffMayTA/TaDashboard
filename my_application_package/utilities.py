@@ -54,8 +54,17 @@ def calculate_utilization(df, start_date_str, end_date_str, selected_department,
     ).reset_index()
     
     non_billable_grouped.columns = ['project_type', 'non_billable_time']
+    # Calculate billable hours by client
+    billable_data_by_client = filtered_data[filtered_data['Billable'] == 'Billable']
 
-    return grouped, non_billable_grouped
+    billable_grouped_by_client = billable_data_by_client.groupby('client').agg(
+        total_billable_hours=('Actual_Hours_Worked', 'sum')
+    ).reset_index()
+
+    billable_grouped_by_client.columns = ['client', 'billable_time']
+
+    print(billable_grouped_by_client)
+    return grouped, non_billable_grouped, billable_grouped_by_client
 
 
 
