@@ -63,7 +63,6 @@ def calculate_utilization(df, start_date_str, end_date_str, selected_department,
 
     billable_grouped_by_client.columns = ['client', 'billable_time']
 
-    print(billable_grouped_by_client)
     return grouped, non_billable_grouped, billable_grouped_by_client
 
 
