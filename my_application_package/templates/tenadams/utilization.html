@@ -145,7 +145,7 @@
             </div>
             {% if not utilization_df.empty %}
             <div class="table-responsive">
-              <table class="table table-hover align-items-center mb-0">
+              <table id="myTable" class="table table-hover align-items-center mb-0">
                 <thead>
                   <tr>
                     <th class="text-uppercase text-xxs font-weight-bolder opacity-7">User Full Name</th>
@@ -169,20 +169,20 @@
                         </div>
                       </div>
                     </td>
-                    <td class="text-center">
+                    <td>
                       <p class="font-weight-bold mb-0">{{ row['total_actual_hours'] }}</p>
                     </td>
-                    <td class="text-center">
+                    <td>
                       <p class="font-weight-bold mb-0">{{ row['total_billable_hours'] }}</p>
                     </td>
-                    <td class="text-center">
+                    <td>
                       <p class="font-weight-bold mb-0">{{ '{:.1f}'.format(row['utilization_rate'] * 100) }}%</p>
                     </td>
-                    <td class="text-center">
+                    <td>
                       <p class="font-weight-bold mb-0">{{ '{:.1f}'.format(row['Rate_Goal'] * 100) }}%</p>
                     </td>
-                    <td class="text-end px-4">
-                      <p class="font-weight-bold mb-0">{{ '{:.1f}'.format((row['utilization_rate'] - row['Rate_Goal']) * 100) }}% 
+                    <td>
+                      <p class="font-weight-bold mb-0 text-end">{{ '{:.1f}'.format((row['utilization_rate'] - row['Rate_Goal']) * 100) }}% 
                         <i class="{{
                           'text-success fas fa-circle-dot' if row['Rate_Goal'] - row['utilization_rate'] < 0 else
                           'text-danger fas fa-circle-dot' if row['Rate_Goal'] - row['utilization_rate'] > 0.1 else
@@ -293,6 +293,11 @@
   </div>
 
   {% include '_corejs.html' %}
+  <script>
+    const dataTable = new simpleDatatables.DataTable("#myTable", {
+      searchable: false
+    })
+  </script>
   <!-- Datepicker scripts --> 
   <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
   <script>
