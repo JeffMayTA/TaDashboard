@@ -94,7 +94,7 @@ class MenuItemForm(FlaskForm):
     # Use coerce=int to ensure the selected value is stored as an integer
     parent_menu_item = SelectField('Parent Menu Item', coerce=int, choices=[(0, 'None')], default=0)
        # New multi-select field for selecting roles
-    roles = SelectMultipleField('Roles', coerce=int, choices=[], default=None)
+    roles = QuerySelectMultipleField('Roles', query_factory=lambda: Role.query, get_label='name')
     client = QuerySelectField('Client', query_factory=lambda: Client.query.all(),
                               get_label='name', allow_blank=True)
 
