@@ -46,13 +46,12 @@ def utilization():
         end_date_str = end_date.strftime('%Y-%m-%d')
         start_date_str = start_date.strftime('%Y-%m-%d')
 
-    # Call the tadxp_utilization function with the start_date, end_date, selected_department, and selected_user
-    utilization_df, non_billable_df, billable_grouped_by_client = tadxp_utilization(start_date_str, end_date_str, selected_department, selected_user)
+    # Call the tadxp_utilization function
+    utilization_df, non_billable_df, billable_grouped_by_client, overall_utilization_rate = tadxp_utilization(start_date_str, end_date_str, selected_department, selected_user)
     # Calculate the total hours and total billable hours
     total_hours = utilization_df['total_actual_hours'].sum()
     total_billable = utilization_df['total_billable_hours'].sum()
-    # Calculate the overall utilization rate
-    overall_utilization_rate = total_billable / total_hours if total_hours != 0 else 0
+
     overall_utilization_rate_formatted = '{:.1f}%'.format(overall_utilization_rate * 100)
     # fetch the departments and users from BigQuery
     departments = fetch_departments()
