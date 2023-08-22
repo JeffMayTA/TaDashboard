@@ -24,10 +24,22 @@ def utilization():
         {'name': 'Ten Adams', 'url': url_for('index')},
         {'name': 'Utilization', 'url': url_for('tenadams.utilization')}
     ]
+    
     start_date_str = None
     end_date_str = None
     selected_department = None
     selected_user = None
+    
+    # Get department of the current user
+    user_department = current_user.department if hasattr(current_user, 'department') else None
+    print("User Department:", user_department)
+
+    
+       # Fetch departments and users with optional filtering
+    departments = fetch_departments(user_department)
+    users = fetch_users(user_department)
+
+
 
     if request.method == 'POST':
         start_date_str = request.form.get('start_date')
@@ -54,8 +66,8 @@ def utilization():
 
     overall_utilization_rate_formatted = '{:.1f}%'.format(overall_utilization_rate * 100)
     # fetch the departments and users from BigQuery
-    departments = fetch_departments()
-    users = fetch_users()
+    # departments = fetch_departments()
+    # users = fetch_users()
     
     # calculate the total working time for each employee
     working_time_df = utilization_df.sort_values(by='working_time', ascending=False)

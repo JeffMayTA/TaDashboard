@@ -77,9 +77,29 @@ def tadxp_utilization(start_date_str, end_date_str, selected_department, selecte
     
 
     # Fetch utilization data from BigQuery
-    data = fetch_utilization_data(start_date_str, end_date_str)
+    data = fetch_utilization_data(start_date_str, end_date_str, selected_department)
 
     # Calculate utilization
     utilization_df, non_billable_grouped, billable_grouped_by_client, overall_utilization_rate = calculate_utilization(data, start_date_str, end_date_str, selected_department, selected_user)
 
     return utilization_df, non_billable_grouped, billable_grouped_by_client, overall_utilization_rate
+
+def initialize_dates(start_date_str, end_date_str):
+    if not start_date_str or not end_date_str:
+        today = date.today()
+        last_sunday = today - timedelta(days=today.weekday() + 1)
+        end_date = last_sunday
+        start_date = last_sunday - timedelta(days=6)
+        end_date_str = end_date.strftime('%Y-%m-%d')
+        start_date_str = start_date.strftime('%Y-%m-%d')
+    return start_date_str, end_date_str
+
+def fetch_data_and_handle_post(request):
+    start_date_str = request.form.get('start_date')
+    end_date_str = request.form.get('end_date')
+    selected_department = request.form.get('department')
+    selected_user = request.form.get('user')
+    start_date_str, end_date_str = initialize_dates(start_date_str, end_date_str)
+    departments = fetch_departments()
+    users = fetch_users()
+    return start_date_str, end_date_str, selected_department, selected_user, departments, users
