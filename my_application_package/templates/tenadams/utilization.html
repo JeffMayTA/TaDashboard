@@ -153,7 +153,7 @@
                     <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Billable Hours</th>
                     <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Utilization Rate</th>
                     <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Rate Goal</th>
-                    <th class="text-end text-uppercase text-xxs font-weight-bolder opacity-7">+/- Target</th>
+                    <th data-order-by="5" data-order-direction="desc" class="text-end text-uppercase text-xxs font-weight-bolder opacity-7">+/- Target</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -295,7 +295,10 @@
   {% include '_corejs.html' %}
   <script>
     const dataTable = new simpleDatatables.DataTable("#myTable", {
-      searchable: false
+      searchable: false,
+      data: {
+        sort: { column: 5, dir: 'desc' }  // sort by the second column in descending order
+      }
     })
   </script>
   <!-- Datepicker scripts --> 
