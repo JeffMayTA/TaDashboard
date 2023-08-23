@@ -154,6 +154,7 @@
                     <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Utilization Rate</th>
                     <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Rate Goal</th>
                     <th class="text-end text-uppercase text-xxs font-weight-bolder opacity-7">+/- Target</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -182,12 +183,14 @@
                       <p class="font-weight-bold mb-0">{{ '{:.1f}'.format(row['Rate_Goal'] * 100) }}%</p>
                     </td>
                     <td>
-                      <p class="font-weight-bold mb-0 text-end">{{ '{:.1f}'.format((row['utilization_rate'] - row['Rate_Goal']) * 100) }}% 
-                        <i class="{{
-                          'text-success fas fa-circle-dot' if row['Rate_Goal'] - row['utilization_rate'] < 0 else
-                          'text-danger fas fa-circle-dot' if row['Rate_Goal'] - row['utilization_rate'] > 0.1 else
-                          'text-warning fas fa-circle-dot'
-                        }}"></i></p>
+                      <p class="font-weight-bold mb-0 text-end">{{ '{:.1f}'.format((row['utilization_rate'] - row['Rate_Goal']) * 100) }}%</p>
+                    </td>
+                    <td>
+                      <i class="{{
+                        'text-success fas fa-circle-dot' if row['Rate_Goal'] - row['utilization_rate'] < 0 else
+                        'text-danger fas fa-circle-dot' if row['Rate_Goal'] - row['utilization_rate'] > 0.1 else
+                        'text-warning fas fa-circle-dot'
+                      }}"></i>
                     </td>
                   </tr>
                   {% endfor %}
@@ -295,7 +298,11 @@
   {% include '_corejs.html' %}
   <script>
     const dataTable = new simpleDatatables.DataTable("#myTable", {
-      searchable: false
+      searchable: false,
+      columns: [
+        // Disable sorting on the fourth and fifth columns
+        { select: [6], sortable: false }
+      ]
     })
   </script>
   <!-- Datepicker scripts --> 
