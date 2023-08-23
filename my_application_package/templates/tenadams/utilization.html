@@ -300,8 +300,10 @@
     const dataTable = new simpleDatatables.DataTable("#myTable", {
       searchable: false,
       columns: [
+        // Sort the sixth column in descending order
+        { select: 5, sort: "desc" },
         // Disable sorting on the seventh column
-        { select: [6], sortable: false }
+        { select: 6, sortable: false }
       ]
     })
   </script>
