@@ -35,7 +35,10 @@
                   {{ form.email.label }}<br>
                   {{ form.email(size=20) }}
               </p>
-          
+              <p class="form-group">
+                {{ form.department.label }} 
+                {{ form.department(class="form-control") }}
+              </p>
               <p>
                   {{ form.roles.label }}<br>
                   {% for choice, label, checked in form.roles.iter_choices() %}

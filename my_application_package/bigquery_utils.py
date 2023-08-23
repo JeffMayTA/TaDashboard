@@ -16,9 +16,11 @@ def create_bigquery_client():
     return credentials, project
 
 
-def fetch_utilization_data(start_date, end_date):
+def fetch_utilization_data(start_date, end_date, department=None):
     try:
         credentials, project = create_bigquery_client()
+        department_filter = f"AND Digital_Utilization.User_Department = '{department}'" if department else ""
+
 
         query = f"""
             SELECT
@@ -41,6 +43,7 @@ def fetch_utilization_data(start_date, end_date):
                 Digital_Utilization.User_Full_Name = employee.User_Full_Name
             WHERE
                Date_Worked BETWEEN '{start_date}' AND '{end_date}'
+               {department_filter}
             ORDER BY
                 Digital_Utilization.User_Full_Name;
             """
@@ -52,26 +55,42 @@ def fetch_utilization_data(start_date, end_date):
         logging.error(f"Input values: param1={start_date}, param2={end_date}")
         raise
 
-def fetch_departments():
+def fetch_departments(user_department=None):
     credentials, project = create_bigquery_client()
 
-    query = """
-    SELECT DISTINCT User_Department
-    FROM `timesheet-data-290519.Utilization.Digital-Utilization`
-    ORDER BY User_Department;
-    """
+    if user_department:
+        query = f"""
+        SELECT DISTINCT User_Department
+        FROM `timesheet-data-290519.Utilization.Digital-Utilization`
+        WHERE User_Department = '{user_department}'
+        ORDER BY User_Department;
+        """
+    else:
+        query = """
+        SELECT DISTINCT User_Department
+        FROM `timesheet-data-290519.Utilization.Digital-Utilization`
+        ORDER BY User_Department;
+        """
     df_departments = pd.read_gbq(query, project_id=project, credentials=credentials)
     departments_list = df_departments['User_Department'].tolist()
     return departments_list
 
-def fetch_users():
+def fetch_users(user_department=None):
     credentials, project = create_bigquery_client()
 
-    query = """
-    SELECT DISTINCT User_Full_Name, User_Department
-    FROM `timesheet-data-290519.Utilization.Digital-Utilization`
-    ORDER BY User_Full_Name;
-    """
+    if user_department:
+        query = f"""
+        SELECT DISTINCT User_Full_Name, User_Department
+        FROM `timesheet-data-290519.Utilization.Digital-Utilization`
+        WHERE User_Department = '{user_department}'
+        ORDER BY User_Full_Name;
+        """
+    else:
+        query = """
+        SELECT DISTINCT User_Full_Name, User_Department
+        FROM `timesheet-data-290519.Utilization.Digital-Utilization`
+        ORDER BY User_Full_Name;
+        """
     df_users = pd.read_gbq(query, project_id=project, credentials=credentials)
     users_list = df_users.to_dict('records')
     return users_list
