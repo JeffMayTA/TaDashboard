@@ -46,13 +46,12 @@ def utilization():
         end_date_str = end_date.strftime('%Y-%m-%d')
         start_date_str = start_date.strftime('%Y-%m-%d')
 
-    # Call the tadxp_utilization function with the start_date, end_date, selected_department, and selected_user
-    utilization_df, non_billable_df = tadxp_utilization(start_date_str, end_date_str, selected_department, selected_user)
+    # Call the tadxp_utilization function
+    utilization_df, non_billable_df, billable_grouped_by_client, overall_utilization_rate = tadxp_utilization(start_date_str, end_date_str, selected_department, selected_user)
     # Calculate the total hours and total billable hours
     total_hours = utilization_df['total_actual_hours'].sum()
     total_billable = utilization_df['total_billable_hours'].sum()
-    # Calculate the overall utilization rate
-    overall_utilization_rate = total_billable / total_hours if total_hours != 0 else 0
+
     overall_utilization_rate_formatted = '{:.1f}%'.format(overall_utilization_rate * 100)
     # fetch the departments and users from BigQuery
     departments = fetch_departments()
@@ -61,9 +60,7 @@ def utilization():
     # calculate the total working time for each employee
     working_time_df = utilization_df.sort_values(by='working_time', ascending=False)
 
-
-
-    return render_template('tenadams/utilization.html', departments=departments, users=users, utilization_df=utilization_df, start_date=start_date_str, end_date=end_date_str, selected_department=selected_department, selected_user=selected_user, total_hours=total_hours, total_billable=total_billable, overall_utilization_rate_formatted=overall_utilization_rate_formatted, working_time_df=working_time_df, non_billable_data=non_billable_df.to_json(orient='records'), breadcrumb=breadcrumb)
+    return render_template('tenadams/utilization.html', departments=departments, users=users, utilization_df=utilization_df, start_date=start_date_str, end_date=end_date_str, selected_department=selected_department, selected_user=selected_user, total_hours=total_hours, total_billable=total_billable, overall_utilization_rate_formatted=overall_utilization_rate_formatted, working_time_df=working_time_df, non_billable_data=non_billable_df.to_json(orient='records'), billable_time=billable_grouped_by_client, breadcrumb=breadcrumb)
 
 @tenadams.route('/timesheets', methods=['GET', 'POST'])
 @login_required

@@ -41,11 +41,17 @@ def calculate_utilization(df, start_date_str, end_date_str, selected_department,
     # Calculate utilization rate
     grouped['eligible_hours'] = workable_days * 8 * grouped['Full_Time'] - grouped['total_time_off_hours']
     grouped['utilization_rate'] = grouped['total_billable_hours'] / grouped['eligible_hours']
-    
+
     # Calculate working time
     grouped['working_time'] = grouped['total_actual_hours'] / (workable_days * 8 * grouped['Full_Time'])
-    
-    
+
+    # Calculate the total eligible hours and total billable hours
+    total_eligible_hours = grouped['eligible_hours'].sum()
+    total_billable = grouped['total_billable_hours'].sum()
+
+    # Calculate the overall utilization rate
+    overall_utilization_rate = total_billable / total_eligible_hours if total_eligible_hours != 0 else 0
+
     # Calculate non-billable hours
     non_billable_data = filtered_data[filtered_data['Billable'] == 'Non Billable']
     
@@ -54,8 +60,16 @@ def calculate_utilization(df, start_date_str, end_date_str, selected_department,
     ).reset_index()
     
     non_billable_grouped.columns = ['project_type', 'non_billable_time']
+    # Calculate billable hours by client
+    billable_data_by_client = filtered_data[filtered_data['Billable'] == 'Billable']
 
-    return grouped, non_billable_grouped
+    billable_grouped_by_client = billable_data_by_client.groupby('client').agg(
+        total_billable_hours=('Actual_Hours_Worked', 'sum')
+    ).reset_index()
+
+    billable_grouped_by_client.columns = ['client', 'billable_time']
+
+    return grouped, non_billable_grouped, billable_grouped_by_client, overall_utilization_rate
 
 
 
@@ -66,6 +80,6 @@ def tadxp_utilization(start_date_str, end_date_str, selected_department, selecte
     data = fetch_utilization_data(start_date_str, end_date_str)
 
     # Calculate utilization
-    utilization_df = calculate_utilization(data, start_date_str, end_date_str, selected_department, selected_user)
+    utilization_df, non_billable_grouped, billable_grouped_by_client, overall_utilization_rate = calculate_utilization(data, start_date_str, end_date_str, selected_department, selected_user)
 
-    return utilization_df
+    return utilization_df, non_billable_grouped, billable_grouped_by_client, overall_utilization_rate
