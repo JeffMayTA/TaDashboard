@@ -26,6 +26,14 @@ def create_app():
     
     app = Flask(__name__, static_folder='static', static_url_path='/static')
     
+    @app.after_request
+    def add_caching_headers(response):
+        if request.path.startswith(app.static_url_path):
+            # Cache for 1 year (365 days)
+            response.cache_control.max_age = 31536000
+            response.cache_control.public = True
+        return response
+    
     app.secret_key = os.environ.get('SECRET_KEY') or 'supersecretkey'
     
 
