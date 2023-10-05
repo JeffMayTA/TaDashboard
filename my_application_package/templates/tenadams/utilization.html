@@ -211,7 +211,7 @@
             </div>
             {% if not utilization_df.empty %}
             <div class="table-responsive">
-              <table class="table align-items-center mb-1">
+              <table id="myTableTwo" class="table align-items-center mb-1">
                 <thead>
                   <tr>
                     <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">User Full Name</th>
@@ -304,6 +304,13 @@
         { select: 5, sort: "desc" },
         // Disable sorting on the seventh column
         { select: 6, sortable: false }
+      ]
+    })
+    const dataTableTwo = new simpleDatatables.DataTable("#myTableTwo", {
+      searchable: false,
+      columns: [
+        // Sort the second column in descending order
+        { select: 1, sort: "desc" }
       ]
     })
   </script>
