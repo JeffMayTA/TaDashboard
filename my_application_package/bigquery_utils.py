@@ -31,6 +31,7 @@ def fetch_utilization_data(start_date, end_date, department=None):
                 Digital_Utilization.Billable,
                 Digital_Utilization.Project_Type,
                 Digital_Utilization.client,
+                Digital_Utilization.ServiceDescription,
                 employee.Rate_Goal,
                 employee.Full_Time,
                 employee.photo_url
