@@ -22,7 +22,8 @@ def new_user():
             lname=form.lname.data,
             email=form.email.data,
             roles=form.roles.data,   # correct field name
-            clients=form.clients.data  # correct field name
+            clients=form.clients.data,  # correct field name
+            department = form.department.data
         )
         user.set_password(form.password.data)
         db.session.add(user)
@@ -88,6 +89,7 @@ def edit_user(id):
         user.email = form.email.data
         user.roles = form.roles.data
         user.clients = form.clients.data
+        user.department = form.department.data 
         db.session.commit()
         flash('User has been updated.', 'success')
         return redirect(url_for('admin.user_list'))

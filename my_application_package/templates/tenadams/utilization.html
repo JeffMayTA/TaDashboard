@@ -102,28 +102,34 @@
                   </div>
                   <div class="col-lg-3 col-sm-6">
                     <div class="form-group">
-                      <label for="department">Department:</label>
-                      <select id="department" name="department" class="form-control">
-                        <option value="">Select a department</option>
-                        {% for dep in departments %}
-                        <option value="{{ dep }}" {% if dep == request.form.get('department') %}selected{% endif %}>{{ dep }}</option>
+                        <label for="department">Department:</label>
+                        <select id="department" name="department" class="form-control">
+                            <option value="">Select a department</option>
+                            {% for dep in departments %}
+                            {% if is_admin or dep == user_department %}
+                            {% set display_department = selected_department if selected_department else user_department %}
+                            <option value="{{ dep }}" {{ 'selected' if dep == display_department }}>{{ dep }}</option>                            
+                            {% endif %}
                         {% endfor %}
-                      </select>
+                        
+                        </select>
                     </div>
-                  </div>
+                </div>
+                
                   <div class="col-lg-3 col-sm-6">
                     <div class="form-group">
                       <label for="user">User:</label>
                       <select id="user" name="user" class="form-control">
                         <option value="">Select a user</option>
                         {% for user in users %}
-                        {% if not selected_department or user['User_Department'] == selected_department %}
-                        <option value="{{ user['User_Full_Name'] }}" data-department="{{ user['User_Department'] }}" {% if user['User_Full_Name'] == request.form.get('user') %}selected{% endif %}>{{ user['User_Full_Name'] }}</option>
-                        {% endif %}
+                          {% if not user_department or user['User_Department'] == user_department %}
+                          <option value="{{ user['User_Full_Name'] }}" data-department="{{ user['User_Department'] }}" {{ 'selected' if user['User_Full_Name'] == request.form.get('user') }}>{{ user['User_Full_Name'] }}</option>
+                          {% endif %}
                         {% endfor %}
                       </select>
                     </div>
-                  </div>    
+                  </div>
+                  
                   <div class="col-lg-2 col-sm-12">
                     <div class="form-group">
                       <button class="btn btn-primary btn-block w-100 m-0" type="submit">Filter</button>
