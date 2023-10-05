@@ -102,19 +102,20 @@
                   </div>
                   <div class="col-lg-3 col-sm-6">
                     <div class="form-group">
-                      <label for="department">Department:</label>
-                      <select id="department" name="department" class="form-control">
-                        {% if user_department %}
-                          <option value="{{ user_department }}" selected>{{ user_department }}</option>
-                        {% else %}
-                          <option value="">Select a department</option>
-                          {% for dep in departments %}
-                          <option value="{{ dep }}">{{ dep }}</option>
-                          {% endfor %}
-                        {% endif %}
-                      </select>
+                        <label for="department">Department:</label>
+                        <select id="department" name="department" class="form-control">
+                            <option value="">Select a department</option>
+                            {% for dep in departments %}
+                            {% if is_admin or dep == user_department %}
+                            {% set display_department = selected_department if selected_department else user_department %}
+                            <option value="{{ dep }}" {{ 'selected' if dep == display_department }}>{{ dep }}</option>                            
+                            {% endif %}
+                        {% endfor %}
+                        
+                        </select>
                     </div>
-                  </div>
+                </div>
+                
                   <div class="col-lg-3 col-sm-6">
                     <div class="form-group">
                       <label for="user">User:</label>

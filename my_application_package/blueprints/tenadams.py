@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 from datetime import date, timedelta, datetime as dt
-from my_application_package.bigquery_utils import get_timesheets_data, fetch_departments, fetch_users, fetch_nonbillable
+from my_application_package.bigquery_utils import get_timesheets_data, fetch_departments, fetch_users, fetch_nonbillable, fetch_utilization_data
 from my_application_package.utilities import tadxp_utilization
 import pandas as pd
 
@@ -34,14 +34,28 @@ def utilization():
 
     # Get department of the current user
     user_department = current_user.department if hasattr(current_user, 'department') else None
-    print("User Department:", user_department)
+    # print("User Department:", user_department)
+    # assign a varible to user deparment to use in the template later 
+    department_to_use = user_department
+
     
     # Fetch departments and users with optional filtering
-    departments = fetch_departments(user_department)
+    # Determine if the user is an admin
+    is_admin = True if user_department is None else False
+
+    # Fetch departments and users with optional filtering
+    if is_admin:
+        departments = fetch_departments()  # Fetch all departments for admin
+    else:
+        departments = fetch_departments(user_department)  # Fetch only user's department for non-admin
+
     users = fetch_users(user_department)
     
     # Handle form data on POST
     if request.method == 'POST':
+        selected_department = request.form.get('department')
+        if selected_department:
+            department_to_use = selected_department
         start_date_str = request.form.get('start_date')
         end_date_str = request.form.get('end_date')
         selected_department = request.form.get('department')
@@ -50,6 +64,12 @@ def utilization():
         # Override user_department with the form input if provided
         if selected_department:
             user_department = selected_department
+
+        # Fetch the departments again based on is_admin status (not user_department)
+        if is_admin:
+            departments = fetch_departments()
+        else:
+            departments = fetch_departments(user_department)
 
     # If start_date_str and end_date_str are not defined yet, set them to the last week's Monday and Sunday
     if not start_date_str or not end_date_str:
@@ -63,7 +83,8 @@ def utilization():
         start_date_str = start_date.strftime('%Y-%m-%d')
 
     # Call the tadxp_utilization function
-    utilization_df, non_billable_df, billable_grouped_by_client, overall_utilization_rate = tadxp_utilization(start_date_str, end_date_str, selected_department, selected_user)
+    print(department_to_use)
+    utilization_df, non_billable_df, billable_grouped_by_client, overall_utilization_rate = tadxp_utilization(start_date_str, end_date_str, department_to_use, selected_user)
 
     # Filter utilization_df by department
     if user_department:
@@ -93,7 +114,8 @@ def utilization():
                            working_time_df=working_time_df, 
                            non_billable_data=non_billable_df.to_json(orient='records'), 
                            billable_time=billable_grouped_by_client, 
-                           breadcrumb=breadcrumb)
+                           breadcrumb=breadcrumb,
+                           is_admin=is_admin)
 
 @tenadams.route('/timesheets', methods=['GET', 'POST'])
 @login_required
@@ -181,3 +203,104 @@ def nonbillable():
     departments = fetch_departments()
     users = fetch_users()
     return render_template('nonbillable.html', start_date=start_date_str, end_date=end_date_str, departments=departments, users=users, grouped_data=grouped_data, selected_department=selected_department)
+
+# this is the code for the Service Description Chart / Page
+@tenadams.route('/service-description-chart', methods=['GET', 'POST'])
+@login_required
+def service_description_chart():
+    start_date_str = None
+    end_date_str = None
+    selected_department = None
+    selected_user = None
+    
+    # Get department of the current user
+    user_department = current_user.department if hasattr(current_user, 'department') else None
+    # print("User Department:", user_department)
+    
+    # assign a varible to user deparment to use in the template later 
+    department_to_use = user_department
+    
+    # Fetch departments and users with optional filtering
+    # Determine if the user is an admin
+    is_admin = True if user_department is None else False
+
+    # Fetch departments and users with optional filtering
+    if is_admin:
+        departments = fetch_departments()  # Fetch all departments for admin
+    else:
+        departments = fetch_departments(user_department)  # Fetch only user's department for non-admin
+
+    users = fetch_users(user_department)
+    
+    # Handle form data on POST
+    if request.method == 'POST':
+        selected_department = request.form.get('department')
+        if selected_department:
+            department_to_use = selected_department
+        start_date_str = request.form.get('start_date')
+        end_date_str = request.form.get('end_date')
+        selected_department = request.form.get('department')
+        selected_user = request.form.get('user')
+        
+        # Override user_department with the form input if provided
+        if selected_department:
+            user_department = selected_department
+
+        # Fetch the departments again based on is_admin status (not user_department)
+        if is_admin:
+            departments = fetch_departments()
+        else:
+            departments = fetch_departments(user_department)
+        
+    # If start_date_str and end_date_str are not defined yet, set them to the last week's Monday and Sunday
+    if not start_date_str or not end_date_str:
+        today = date.today()       
+        last_sunday = today - timedelta(days=today.weekday()+1)
+        end_date = last_sunday
+        start_date = last_sunday - timedelta(days=6)
+
+        # Convert dates to strings in the desired format
+        end_date_str = end_date.strftime('%Y-%m-%d')
+        start_date_str = start_date.strftime('%Y-%m-%d')
+    
+    # Fetch data using the fetch_utilization_data function
+    df = fetch_utilization_data(start_date_str, end_date_str, department_to_use)
+    
+    # Filter data by selected user if provided
+    if selected_user:
+        df = df[df['User_Full_Name'] == selected_user]
+    
+    # Group and aggregate data for pie chart
+    grouped_data = df.groupby('ServiceDescription').agg({'Actual_Hours_Worked': 'sum'}).reset_index()
+    
+    # Compute percentages
+    total_hours = grouped_data['Actual_Hours_Worked'].sum()
+    grouped_data['Percentage'] = (grouped_data['Actual_Hours_Worked'] / total_hours) * 100
+    
+    # Sort by percentage in descending order
+    grouped_data = grouped_data.sort_values(by='Percentage', ascending=False)
+
+    # Get the sorted labels and data_values for the pie chart
+    labels = grouped_data['ServiceDescription'].tolist()
+    data_values = grouped_data['Percentage'].tolist()
+
+    # Fetch departments and users for the form filters
+    # departments = fetch_departments()
+    # users = fetch_users()
+    
+    print("Is Admin:", is_admin)
+    print("User Department:", user_department)
+    print("Departments:", departments)
+
+
+    return render_template('tenadams/servicecodes.html', 
+                           labels=labels, 
+                           data_values=data_values, 
+                           departments=departments, 
+                           users=users, 
+                           selected_department=selected_department, 
+                           selected_user=selected_user,
+                           start_date=start_date_str, 
+                           end_date=end_date_str,
+                           user_department=user_department,
+                           is_admin=is_admin)    
