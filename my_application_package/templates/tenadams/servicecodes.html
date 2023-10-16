@@ -82,12 +82,15 @@
             </div>
         </div>
       </div>
-
-      
-      
-
-
-          
+      <div class="col-xxl-7">
+        <div class="table-responsive">
+          <table class="table align-items-center mb-0">
+            <tbody id="service-code-chart-legend" class="legend-container">
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
         </div>
       </div>
     </div>
@@ -138,8 +141,7 @@
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: true,
-                    position: 'right'
+                    display: false // Disable the built-in legend
                 },
                 tooltip: {
                     callbacks: {
@@ -155,5 +157,40 @@
             }
         }
     });
+
+    // Manually create the service code legend
+    const scLegendContainer = document.getElementById('service-code-chart-legend'); // Make sure you have this container in your HTML
+
+    serviceCodeData.labels.forEach((label, index) => {
+        const value = serviceCodeData.datasets[0].data[index];
+        if (value > 0) {
+            const legendItem = document.createElement('tr');
+            const legendItemData = document.createElement('td');
+            legendItem.appendChild(legendItemData);
+
+            const legendItemContent = document.createElement('div');
+            legendItemContent.classList.add('d-flex', 'px-2', 'py-0');
+            legendItemData.appendChild(legendItemContent);
+
+            // Create the color block
+            const colorBlock = document.createElement('span');
+            colorBlock.classList.add('badge', 'me-3', 'd-block');
+            colorBlock.style.backgroundColor = serviceCodePieChart.data.datasets[0].backgroundColor[index];
+            legendItemContent.appendChild(colorBlock);
+
+            // Add the service code label
+            const labelTextContain = document.createElement('div');
+            labelTextContain.classList.add('d-flex', 'flex-column', 'justify-content-center');
+            legendItemContent.appendChild(labelTextContain);
+
+            const labelText = document.createElement('h6');
+            labelText.classList.add('mb-0', 'text-sm');
+            labelText.textContent = label;
+            labelTextContain.appendChild(labelText);
+
+            scLegendContainer.appendChild(legendItem);
+        }
+    });
 </script>
+
   {% endblock %}
