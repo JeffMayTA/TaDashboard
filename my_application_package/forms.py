@@ -52,7 +52,7 @@ class UserForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     roles = QuerySelectMultipleField('Roles', query_factory=lambda: Role.query.all(), get_label='name')
-    department = SelectField('Department', choices=[('', 'None'), ('Creative', 'Creative'), ('Client Services/Strategy', 'Client Services/Strategy'), ('Project Management', 'Project Management'), ('Digital', 'Digital')])
+    department = SelectField('Department', choices=[('', 'None'), ('Creative', 'Creative'), ('Client Services/Strategy', 'Client Services/Strategy'), ('Project Management', 'Project Management'), ('Digital', 'Digital'), ('Media', 'Media'), ('Level Ten', 'Level Ten'), ('Business Development', 'Business Development')])
     clients = QuerySelectMultipleField('Clients', query_factory=lambda: Client.query.all(), get_label='name')
     
 class EditUserForm(FlaskForm):
@@ -61,7 +61,7 @@ class EditUserForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     roles = QuerySelectMultipleField('Roles', query_factory=lambda: Role.query.all(), get_label='name')
     clients = QuerySelectMultipleField('Clients', query_factory=lambda: Client.query.all(), get_label='name')
-    department = SelectField('Department', choices=[('', 'None'), ('Creative', 'Creative'), ('Client Services/Strategy', 'Client Services/Strategy'), ('Project Management', 'Project Management'), ('Digital', 'Digital')])
+    department = SelectField('Department', choices=[('', 'None'), ('Creative', 'Creative'), ('Client Services/Strategy', 'Client Services/Strategy'), ('Project Management', 'Project Management'), ('Digital', 'Digital'), ('Media', 'Media'), ('Level Ten', 'Level Ten'), ('Business Development', 'Business Development')])
 
 
     def __init__(self, *args, **kwargs):
