@@ -33,7 +33,7 @@ def utilization():
 
 
     # Get department of the current user
-    user_department = current_user.department if hasattr(current_user, 'department') else None
+    user_department = current_user.department if (hasattr(current_user, 'department') and current_user.department not in (None, '')) else None
     # print("User Department:", user_department)
     # assign a varible to user deparment to use in the template later 
     department_to_use = user_department
@@ -126,7 +126,7 @@ def timesheets():
     ]
 
     # Default to the user's department if available:
-    user_department = current_user.department if hasattr(current_user, 'department') else None
+    user_department = current_user.department if (hasattr(current_user, 'department') and current_user.department not in (None, '')) else None
 
     # Use form values if provided, else default to the user's attributes or None:
     department = request.form.get('department', user_department)
@@ -214,7 +214,8 @@ def service_description_chart():
     selected_user = None
     
     # Get department of the current user
-    user_department = current_user.department if hasattr(current_user, 'department') else None
+    user_department = current_user.department if (hasattr(current_user, 'department') and current_user.department not in (None, '')) else None
+
     # print("User Department:", user_department)
     
     # assign a varible to user deparment to use in the template later 
