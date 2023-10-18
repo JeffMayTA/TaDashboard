@@ -44,11 +44,16 @@
 <body class="{% block bodyclass %}{% endblock %}">
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-      {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">
-          {{ message }}
-        </div>
-      {% endfor %}
+      <div class="alert-contain position-fixed p-4 pt-0" style="z-index: 10000;">
+        {% for category, message in messages %}
+          <div class="alert alert-primary alert-dismissible alert-{{ category }} fade show mb-0 mt-3 text-white">
+            <span class="alert-text">{{ message }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true"><i class="fas fa-xmark d-block"></i></span>
+            </button>
+          </div>
+        {% endfor %}
+      </div>
     {% endif %}
   {% endwith %}
 
