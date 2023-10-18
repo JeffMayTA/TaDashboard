@@ -16,17 +16,7 @@
         <div class="mb-3">
           {{ form.password(class="form-control form-control-lg", placeholder="Password", aria_label="Password") }}
         </div>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              {% if category == 'danger' %}
-                <div class="alert alert-{{ category }}">
-                  {{ message }}
-                </div>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+        
         <div class="form-check form-switch">
           {{ form.remember_me(class="form-check-input", id="rememberMe") }} {# Render the "Remember me" checkbox #}
           <label class="form-check-label" for="rememberMe">Remember me</label>

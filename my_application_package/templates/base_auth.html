@@ -42,11 +42,16 @@
 <body class="{% block bodyclass %}{% endblock %}">
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-      {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">
-          {{ message }}
-        </div>
-      {% endfor %}
+      <div class="alert-contain position-fixed p-4 pt-0" style="z-index: 10000;">
+        {% for category, message in messages %}
+          <div class="alert alert-primary alert-dismissible alert-{{ category }} fade show mb-0 mt-3 text-white">
+            <span class="alert-text">{{ message }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true"><i class="fas fa-xmark d-block"></i></span>
+            </button>
+          </div>
+        {% endfor %}
+      </div>
     {% endif %}
   {% endwith %}
 
@@ -60,7 +65,7 @@
               <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
                 <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center">
                   <img src="{{ url_for('static', filename='assets/img/shapes/pattern-lines.svg') }}" alt="pattern-lines" class="position-absolute opacity-4 start-0">
-                  <h1>Welcome to the Dashboard!</h1>
+                  <h1 class="text-white">Welcome to the Dashboard!</h1>
                   <h4 class="mt-5 text-white font-weight-bolder">{{ quote }}</h4>
                   <p class="text-white">{{ author }}</p>
                 </div>
