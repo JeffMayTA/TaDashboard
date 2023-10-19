@@ -26,6 +26,13 @@ def create_app():
     
     app = Flask(__name__, static_folder='static', static_url_path='/static')
     
+    @app.before_request
+    def redirect_to_custom_domain():
+        if request.host == 'timesheet-data-290519.uc.r.appspot.com':
+            # Redirect to the custom subdomain, preserving the path and query parameters
+            return redirect('https://tendash.tenadams.com' + request.full_path, code=301)
+
+    
     @app.after_request
     def add_caching_headers(response):
         if request.path.startswith(app.static_url_path):
