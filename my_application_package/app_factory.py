@@ -12,12 +12,14 @@ from .forms import ForgotPasswordForm, ResetPasswordForm, RegisterForm
 
 
 load_dotenv()
+# print(f"Current FLASK_ENV: {os.getenv('FLASK_ENV')}")
 login_manager = LoginManager()
 
 mail = Mail()
 
 
 def create_app():
+    # print("Creating the Flask app...")
     # Import the blueprints
     from .blueprints.tenadams import tenadams
     from .blueprints.auth import auth
@@ -28,15 +30,18 @@ def create_app():
     
     @app.before_request
     def enforce_https_and_redirect_to_custom_domain():
+        # print("Debugging enforce_https_and_redirect_to_custom_domain:")
+        # print(f"Request URL: {request.url}")
+        # print(f"Request is_secure: {request.is_secure}")
+        # print(f"FLASK_ENV: {os.getenv('FLASK_ENV')}")
         # If request is on the default GAE domain, redirect to custom domain.
         if request.host == 'timesheet-data-290519.uc.r.appspot.com':
             return redirect('https://tendash.tenadams.com' + request.full_path, code=301)
         # If request is not secure and it's not localhost, redirect to HTTPS.
-        elif not request.is_secure and 'localhost' not in request.url:
+        elif not request.is_secure and '127.0.0.1' not in request.url:
             url = request.url.replace('http://', 'https://', 1)
             return redirect(url, code=301)
 
-    
     @app.after_request
     def add_caching_headers(response):
         if request.path.startswith(app.static_url_path):
