@@ -199,10 +199,11 @@ def nonbillable():
         start_date_str = start_date.strftime('%Y-%m-%d')
     nonbill_df = fetch_nonbillable(start_date_str, end_date_str, selected_department, selected_user)
     grouped_data = nonbill_df.groupby(['User_Full_Name', 'Project_Type']).agg({'Actual_Hours_Worked': 'sum'}).reset_index()
+    print(grouped_data)
     # fetch the departments and users from BigQuery
     departments = fetch_departments()
     users = fetch_users()
-    return render_template('nonbillable.html', start_date=start_date_str, end_date=end_date_str, departments=departments, users=users, grouped_data=grouped_data, selected_department=selected_department)
+    return render_template('tenadams/nonbillable.html', start_date=start_date_str, end_date=end_date_str, departments=departments, users=users, grouped_data=grouped_data, selected_department=selected_department)
 
 # this is the code for the Service Description Chart / Page
 @tenadams.route('/service-description-chart', methods=['GET', 'POST'])

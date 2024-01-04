@@ -140,14 +140,10 @@ def fetch_nonbillable(start_date_str, end_date_str, selected_department=None, se
                 Digital_Utilization.Actual_Hours_Worked,
                 Digital_Utilization.Billable,
                 Digital_Utilization.Project_Type,
-                employee.Rate_Goal,
-                employee.Full_Time
+                Digital_Utilization.project_Name,
+                Digital_Utilization.ServiceDescription,
             FROM
                 `timesheet-data-290519.Utilization.Digital-Utilization` AS Digital_Utilization
-            JOIN
-                `timesheet-data-290519.Utilization.Employee-Data` employee
-            ON
-                Digital_Utilization.User_Full_Name = employee.User_Full_Name
             WHERE
                 Date_Worked BETWEEN '{start_date_str}' AND '{end_date_str}'
                 {department_filter}
