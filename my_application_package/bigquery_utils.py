@@ -126,11 +126,18 @@ def get_timesheets_data():
         logging.error(f"Error in get_timesheets_data: {e}")
         raise
 
-def fetch_nonbillable(start_date_str, end_date_str, selected_department=None, selected_user=None):
+def fetch_nonbillable(start_date_str, end_date_str, selected_department=None, selected_user=None, data_type=None):
     credentials, project = create_bigquery_client()
 
     department_filter = f"AND Digital_Utilization.User_Department = '{selected_department}'" if selected_department else ""
     user_filter = f"AND Digital_Utilization.User_Full_Name = '{selected_user}'" if selected_user else ""
+
+    # Additional filter or selection based on data_type
+    data_type_filter = ""
+    if data_type == 'management_time':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Management'"
+        # Here you can add more columns or conditions specific to 'management time'
+
     try:
         query = f"""
             SELECT
@@ -142,12 +149,14 @@ def fetch_nonbillable(start_date_str, end_date_str, selected_department=None, se
                 Digital_Utilization.Project_Type,
                 Digital_Utilization.project_Name,
                 Digital_Utilization.ServiceDescription,
+                Digital_Utilization.task_Name,
             FROM
                 `timesheet-data-290519.Utilization.Digital-Utilization` AS Digital_Utilization
             WHERE
                 Date_Worked BETWEEN '{start_date_str}' AND '{end_date_str}'
                 {department_filter}
                 {user_filter}
+                {data_type_filter}
             ORDER BY
                 Digital_Utilization.User_Full_Name;
             """

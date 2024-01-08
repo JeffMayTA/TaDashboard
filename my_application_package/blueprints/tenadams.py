@@ -197,13 +197,45 @@ def nonbillable():
         # Convert dates to strings in the desired format
         end_date_str = end_date.strftime('%Y-%m-%d')
         start_date_str = start_date.strftime('%Y-%m-%d')
-    nonbill_df = fetch_nonbillable(start_date_str, end_date_str, selected_department, selected_user)
-    grouped_data = nonbill_df.groupby(['User_Full_Name', 'Project_Type']).agg({'Actual_Hours_Worked': 'sum'}).reset_index()
+    
+    data_type = request.form.get('data_type') if request.method == 'POST' else 'management_time'
+
+    nonbill_df = fetch_nonbillable(start_date_str, end_date_str, selected_department, selected_user, data_type)
+    # Process data based on data_type
+    if data_type == 'management_time':
+        grouped_data = nonbill_df[nonbill_df['Project_Type'] == 'zInternal: Management'].groupby('task_Name').agg({'Actual_Hours_Worked': 'sum'}).reset_index()
+        grouped_data = grouped_data.sort_values('Actual_Hours_Worked', ascending=False)
+        total_hours = grouped_data['Actual_Hours_Worked'].sum()
+        grouped_data['Percentage_of_Total'] = (grouped_data['Actual_Hours_Worked'] / total_hours) * 100
+    elif data_type == 'gen_admin':
+        grouped_data = nonbill_df[nonbill_df['Project_Type'] == 'zInternal: Gen Admin'].groupby('task_Name').agg({'Actual_Hours_Worked': 'sum'}).reset_index()
+        grouped_data = grouped_data.sort_values('Actual_Hours_Worked', ascending=False)
+        total_hours = grouped_data['Actual_Hours_Worked'].sum()
+        grouped_data['Percentage_of_Total'] = (grouped_data['Actual_Hours_Worked'] / total_hours) * 100
+    elif data_type == 'operations':
+        grouped_data = nonbill_df[nonbill_df['Project_Type'] == 'zInternal: Operations'].groupby('task_Name').agg({'Actual_Hours_Worked': 'sum'}).reset_index()
+        grouped_data = grouped_data.sort_values('Actual_Hours_Worked', ascending=False)
+        total_hours = grouped_data['Actual_Hours_Worked'].sum()
+        grouped_data['Percentage_of_Total'] = (grouped_data['Actual_Hours_Worked'] / total_hours) * 100
+    elif data_type == 'training':
+        grouped_data = nonbill_df[nonbill_df['Project_Type'] == 'zInternal: Training'].groupby('task_Name').agg({'Actual_Hours_Worked': 'sum'}).reset_index()
+        grouped_data = grouped_data.sort_values('Actual_Hours_Worked', ascending=False)
+        total_hours = grouped_data['Actual_Hours_Worked'].sum()
+        grouped_data['Percentage_of_Total'] = (grouped_data['Actual_Hours_Worked'] / total_hours) * 100
+    elif data_type == 'nbca':
+        grouped_data = nonbill_df[nonbill_df['Project_Type'] == 'zNB Client Admin'].groupby('task_Name').agg({'Actual_Hours_Worked': 'sum'}).reset_index()
+        grouped_data = grouped_data.sort_values('Actual_Hours_Worked', ascending=False)
+        total_hours = grouped_data['Actual_Hours_Worked'].sum()
+        grouped_data['Percentage_of_Total'] = (grouped_data['Actual_Hours_Worked'] / total_hours) * 100
+
+
+
+
     print(grouped_data)
     # fetch the departments and users from BigQuery
     departments = fetch_departments()
     users = fetch_users()
-    return render_template('tenadams/nonbillable.html', start_date=start_date_str, end_date=end_date_str, departments=departments, users=users, grouped_data=grouped_data, selected_department=selected_department)
+    return render_template('tenadams/nonbillable.html', start_date=start_date_str, end_date=end_date_str, departments=departments, users=users, grouped_data=grouped_data, selected_department=selected_department, data_type=data_type)
 
 # this is the code for the Service Description Chart / Page
 @tenadams.route('/service-description-chart', methods=['GET', 'POST'])
