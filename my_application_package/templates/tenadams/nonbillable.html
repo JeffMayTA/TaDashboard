@@ -1,8 +1,23 @@
 {% extends "base.html" %}
-{% block title %}Service Codes{% endblock %}
+{% block title %}Non-Billable Time Detail{% endblock %}
 {% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
 
 {% block content %}
+
+<!-- Define the 'If' logic for Table Header Names adn column content based on the Data Type Selected -->
+  {% set header_name = 'Task Name' %}
+  {% set column_name = 'task_Name' %}
+  {% if data_type == 'management_time' or data_type == 'gen_admin' or data_type == 'operations' or data_type == 'training' or data_type == 'nbca' %}
+    {% set header_name = 'Task Name' %}
+    {% set column_name = 'task_Name' %}
+  {% elif data_type == 'internal_initiative'or data_type == 'opp_time' or data_type == 'new_biz' %}
+    {% set header_name = 'Project Name' %}
+    {% set column_name = 'project_Name' %}
+  {% endif %}
+
+  <!-- ... rest of your template ... -->
+
+
   <div class="row">
     <div class="col position-relative z-index-2">
       <div class="card card-plain mb-4">
@@ -43,6 +58,9 @@
                       <option value="operations" {% if data_type == 'operations' %}selected{% endif %}>Operations Time by Task</option>
                       <option value="training" {% if data_type == 'training' %}selected{% endif %}>Training Time by Task</option>
                       <option value="nbca" {% if data_type == 'nbca' %}selected{% endif %}>NBCA Time by Task</option>
+                      <option value="internal_initiative" {% if data_type == 'internal_initiative' %}selected{% endif %}>Internal Initiative by Project</option>
+                      <option value="opp_time" {% if data_type == 'opp_time' %}selected{% endif %}>Opporunity Time by Project</option>
+                      <option value="new_biz" {% if data_type == 'new_biz' %}selected{% endif %}>New Business by Project</option>
                       <!-- Add other options here -->
                     </select>
                   </div>
@@ -100,6 +118,12 @@
               Training Time by Task
               {% elif data_type == 'nbca' %}
               NBCA Time by Task
+              {% elif data_type == 'internal_initiative' %}
+              Internal Initiative by Project
+              {% elif data_type == 'opp_time' %}
+              Opportunity Time by Project
+              {% elif data_type == 'new_biz' %}
+              New Business by Project
             {% endif %}
           </h4>
           <div class="table-responsive">
@@ -107,36 +131,18 @@
               <table class="table align-items-center mb-0">
                 <thead>
                   <tr>
-                    {% if data_type == 'management_time' %}
-                      <th>Task Name</th>
+                      <th>{{ header_name }}</th>
                       <th>Total Hours</th>
                       <th>% of Total</th>
-                    {% elif data_type == 'gen_admin' %}
-                      <th>Task Name</th>
-                      <th>Total Hours</th>
-                      <th>% of Total</th>
-                    {% elif data_type == 'operations' %}
-                    <th>Task Name</th>
-                    <th>Total Hours</th>
-                    <th>% of Total</th>
-                    {% elif data_type == 'training' %}
-                    <th>Task Name</th>
-                    <th>Total Hours</th>
-                    <th>% of Total</th>
-                    {% elif data_type == 'nbca' %}
-                    <th>Task Name</th>
-                    <th>Total Hours</th>
-                    <th>% of Total</th>
-                    {% endif %}
                   </tr>
                 </thead>
                 <tbody>
                   {% for index, row in grouped_data.iterrows() %}
                   <tr>
-                    <td>{{ row['task_Name'] }}</td>
+                    <td>{{ row[column_name] }}</td>
                     <td>{{ row['Actual_Hours_Worked'] }}</td>
-                    <td>{{ "%.2f"|format(row.Percentage_of_Total) }}%
-                            <!-- Progress bar -->
+                    <td>{{ "%.2f"|format(row.Percentage_of_Total) }}%</td> <!-- Format the percentage to two decimal places -->
+                       <td>     <!-- Progress bar -->
                         <div class="progress">
                           <div class="progress-bar bg-dark" role="progressbar" style="width: {{ row.Percentage_of_Total }}%;" aria-valuenow="{{ row.Percentage_of_Total }}" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
