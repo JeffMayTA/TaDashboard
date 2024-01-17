@@ -73,24 +73,72 @@
           </div>
         </div>
       </div>
-      <!-- Pie chart for Service Code Summary -->
-      <div class="card mb-4">
-        <div class="card-body p-3">
-          <h4 class="font-weight-bolder mb-3">Service Code Breakdown</h4>
-          <div class="row">
-            <div class="col-xxl-5 mb-4">
-              <div class="chart">
-                <canvas id="service-code-chart" class="chart-canvas" height="300"></canvas>
-              </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card mb-4">
+            <div class="card-body p-3">
+              <h4 class="font-weight-bolder mb-0">Service Code Breakdown</h4>
             </div>
-            <div class="col-xxl-7">
-              <div class="table-responsive">
-                <table class="table align-items-center mb-0">
-                  <tbody id="service-code-chart-legend" class="legend-container">
-                    
-                  </tbody>
-                </table>
-              </div>
+            <div class="table-responsive">
+              <table id="myTableTwo" class="table align-items-center mb-1">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">Service Code</th>
+                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">Percentage</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <h6 class="mb-0">General Admin</h6>
+                      </div>
+                    </td>
+                    <td class="px-3">
+                      <p class="text-sm font-weight-bold mb-2">16%</p>
+                    </td>
+                    <td class="px-3">
+                      <div class="progress w-100">
+                        <div class="progress-bar bg-dark" role="progressbar" style="width: 16%;" aria-valuenow="16%" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <h6 class="mb-0">Strategy/Planning</h6>
+                      </div>
+                    </td>
+                    <td class="px-3">
+                      <p class="text-sm font-weight-bold mb-2">7%</p>
+                    </td>
+                    <td class="px-3">
+                      <div class="progress w-100">
+                        <div class="progress-bar bg-dark" role="progressbar" style="width: 7%;" aria-valuenow="7%" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <h6 class="mb-0">Design</h6>
+                      </div>
+                    </td>
+                    <td class="px-3">
+                      <p class="text-sm font-weight-bold mb-2">6%</p>
+                    </td>
+                    <td class="px-3">
+                      <div class="progress w-100">
+                        <div class="progress-bar bg-dark" role="progressbar" style="width: 6%;" aria-valuenow="6%" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -99,123 +147,5 @@
   </div>
 
   {% include '_corejs.html' %}
-
-  <!-- Datepicker scripts --> 
-  <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
-  <script>
-    // Datepicker
-    if (document.querySelector('.datepicker')) {
-      flatpickr('.datepicker', {
-        mode: "single"
-      });
-    }
-  </script>
-  
-  <script>
-    // Register the plugin
-    Chart.register(ChartDataLabels);
-  
-    /// Create the pie chart for Service Descriptions
-    const serviceCodeCtx = document.getElementById('service-code-chart').getContext('2d');
-    const serviceCodeData = {
-      labels: {{ labels|tojson }}, // Use the labels you passed from the backend
-      datasets: [{
-        data: {{ data_values|tojson }}, // Use the data values you passed from the backend
-        backgroundColor: ["#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00", "#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00", "#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00"], // Colors for pie slices
-        borderWidth: 1
-      }]
-    };
-    const serviceCodePieChart = new Chart(serviceCodeCtx, {
-      type: 'doughnut',
-      data: serviceCodeData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutoutPercentage: 70,
-        plugins: {
-          legend: {
-            display: false // Disable the built-in legend
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                var dataset = context.dataset;
-                var index = context.dataIndex;
-                var data = context.chart.data;
-                var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
-                  return previousValue + currentValue;
-                });
-                var currentValue = dataset.data[index];
-                var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
-                return data.labels[index] + ": " + percentage + "%";
-              }
-            }
-          },
-          datalabels: {
-            formatter: function(value, context) {
-              var dataset = context.chart.data.datasets[context.datasetIndex];
-              var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
-                return previousValue + currentValue;
-              });
-              var percentage = Math.floor(((value / total) * 100) + 0.5);
-          
-              // Only show labels for pie pieces with a percentage greater than or equal to 5%
-              if (percentage >= 3 ) {
-                return percentage + '%';
-              } else {
-                return null; // Return null to hide the label for smaller pie pieces
-              }
-            },
-            color: '#fff',
-            font: {
-              size: 14,
-              weight: 'bold',
-              shadowColor: 'rgba(0, 0, 0, 0.5)',
-              shadowBlur: 5,
-              shadowOffsetX: 2,
-              shadowOffsetY: 2
-            },
-            anchor: 'center', // Change anchor to 'center'
-            align: 'center', // Change align to 'center'
-            offset: 0 // Set offset to 0
-          }
-        }
-      }
-    });
-
-    // Manually create the service code legend
-    const scLegendContainer = document.getElementById('service-code-chart-legend'); // Make sure you have this container in your HTML
-
-    serviceCodeData.labels.forEach((label, index) => {
-      const value = serviceCodeData.datasets[0].data[index];
-      if (value > 0) {
-        const legendItem = document.createElement('tr');
-        const legendItemData = document.createElement('td');
-        legendItem.appendChild(legendItemData);
-
-        const legendItemContent = document.createElement('div');
-        legendItemContent.classList.add('d-flex', 'px-2', 'py-0');
-        legendItemData.appendChild(legendItemContent);
-
-        // Create the color block
-        const colorBlock = document.createElement('span');
-        colorBlock.classList.add('badge', 'me-3', 'd-block');
-        colorBlock.style.backgroundColor = serviceCodePieChart.data.datasets[0].backgroundColor[index];
-        legendItemContent.appendChild(colorBlock);
-
-        // Add the service code label
-        const labelTextContain = document.createElement('div');
-        labelTextContain.classList.add('d-flex', 'flex-column', 'justify-content-center');
-        legendItemContent.appendChild(labelTextContain);
-
-        const labelText = document.createElement('h6');
-        labelText.classList.add('mb-0', 'text-sm');
-        labelText.textContent = label;
-        labelTextContain.appendChild(labelText);
-
-        scLegendContainer.appendChild(legendItem);
-      }
-    });
-</script>
 
   {% endblock %}
