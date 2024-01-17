@@ -126,10 +126,9 @@ def get_timesheets_data():
         logging.error(f"Error in get_timesheets_data: {e}")
         raise
 
-def fetch_nonbillable(start_date_str, end_date_str, selected_department=None, selected_user=None, data_type=None):
+def fetch_nonbillable(start_date_str, end_date_str, department=None, selected_user=None, data_type=None):
     credentials, project = create_bigquery_client()
-
-    department_filter = f"AND Digital_Utilization.User_Department = '{selected_department}'" if selected_department else ""
+    department_filter = f"AND Digital_Utilization.User_Department = '{department}'" if department else ""
     user_filter = f"AND Digital_Utilization.User_Full_Name = '{selected_user}'" if selected_user else ""
 
     # Additional filter or selection based on data_type
@@ -152,8 +151,13 @@ def fetch_nonbillable(start_date_str, end_date_str, selected_department=None, se
                 Digital_Utilization.task_Name,
             FROM
                 `timesheet-data-290519.Utilization.Digital-Utilization` AS Digital_Utilization
+            JOIN
+                `timesheet-data-290519.Utilization.Employee-Data` employee
+            ON
+                Digital_Utilization.User_Full_Name = employee.User_Full_Name
             WHERE
                 Date_Worked BETWEEN '{start_date_str}' AND '{end_date_str}'
+                AND Digital_Utilization.Billable = 'Non Billable' 
                 {department_filter}
                 {user_filter}
                 {data_type_filter}
