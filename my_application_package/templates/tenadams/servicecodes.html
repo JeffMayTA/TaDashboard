@@ -85,57 +85,34 @@
                 <thead>
                   <tr>
                     <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">Service Code</th>
+                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">Actual Hours</th>
                     <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">Percentage</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  
+                  {% for index, row in grouped_data.iterrows() %}
                   <tr>
                     <td>
                       <div class="d-flex px-2 py-1">
-                        <h6 class="mb-0">General Admin</h6>
+                        <h6 class="mb-0">{{ row['ServiceDescription'] }}</h6>
                       </div>
                     </td>
-                    <td class="px-3">
-                      <p class="text-sm font-weight-bold mb-2">16%</p>
-                    </td>
-                    <td class="px-3">
-                      <div class="progress w-100">
-                        <div class="progress-bar bg-dark" role="progressbar" style="width: 16%;" aria-valuenow="16%" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
                     <td>
                       <div class="d-flex px-2 py-1">
-                        <h6 class="mb-0">Strategy/Planning</h6>
+                        <h6 class="mb-0">{{ row['Actual_Hours_Worked'] }}</h6>
                       </div>
                     </td>
                     <td class="px-3">
-                      <p class="text-sm font-weight-bold mb-2">7%</p>
-                    </td>
-                    <td class="px-3">
-                      <div class="progress w-100">
-                        <div class="progress-bar bg-dark" role="progressbar" style="width: 7%;" aria-valuenow="7%" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="d-flex px-2 py-1">
-                        <h6 class="mb-0">Design</h6>
-                      </div>
-                    </td>
-                    <td class="px-3">
-                      <p class="text-sm font-weight-bold mb-2">6%</p>
+                      <p class="text-sm font-weight-bold mb-2">{{ "%.2f"|format(row['Percentage']) }}</p>
                     </td>
                     <td class="px-3">
                       <div class="progress w-100">
-                        <div class="progress-bar bg-dark" role="progressbar" style="width: 6%;" aria-valuenow="6%" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar bg-dark" role="progressbar" style="width: {{ row['Percentage'] }}%;" aria-valuenow="{{ row['Percentage'] }}%" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
                     </td>
                   </tr>
+                  {% endfor %}
 
                 </tbody>
               </table>
