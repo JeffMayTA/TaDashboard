@@ -104,9 +104,9 @@
                       </div>
                     </td>
                     <td class="px-3">
-                      <p class="text-sm font-weight-bold mb-2">{{ "%.2f"|format(row['Percentage']) }}</p>
+                      <p class="text font-weight-bold mb-0">{{ "%.2f"|format(row['Percentage']) }}%</p>
                     </td>
-                    <td class="px-3">
+                    <td class="px-3" style="min-width:200px;">
                       <div class="progress w-100">
                         <div class="progress-bar bg-dark" role="progressbar" style="width: {{ row['Percentage'] }}%;" aria-valuenow="{{ row['Percentage'] }}%" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
