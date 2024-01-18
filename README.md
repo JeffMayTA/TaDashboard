@@ -44,10 +44,10 @@ To run the app locally, use the following command:
 In the terminal on first run, or first launch, run this command
 
 copy code
-`export FLASK_APP=main.py`
+`export FLASK_APP=main.py` or `flask --app main.py --debug run`
 
 then run
-`flask run`
+`flask run` or `flask run --reload`
 
 CTRL - C to exit
 

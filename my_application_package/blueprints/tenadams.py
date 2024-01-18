@@ -280,6 +280,8 @@ def service_description_chart():
     
     # Sort by percentage in descending order
     grouped_data = grouped_data.sort_values(by='Percentage', ascending=False)
+    
+    # print(grouped_data)
 
     # Get the sorted labels and data_values for the pie chart
     labels = grouped_data['ServiceDescription'].tolist()
@@ -289,15 +291,14 @@ def service_description_chart():
     # departments = fetch_departments()
     # users = fetch_users()
     
-    print("Is Admin:", is_admin)
-    print("User Department:", user_department)
-    print("Departments:", departments)
+    # print("Is Admin:", is_admin)
+    # print("User Department:", user_department)
+    # print("Departments:", departments)
 
 
     return render_template('tenadams/servicecodes.html', 
-                           labels=labels, 
-                           data_values=data_values, 
                            departments=departments, 
+                           grouped_data=grouped_data,
                            users=users, 
                            selected_department=selected_department, 
                            selected_user=selected_user,
