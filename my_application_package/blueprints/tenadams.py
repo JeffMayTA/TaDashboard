@@ -171,7 +171,13 @@ def timesheets():
 
     first_key = next(iter(data.keys()))
 
-    return render_template('tenadams/timesheets.html', data=data, first_key=first_key, departments=departments, users=users, selected_department=department, breadcrumb=breadcrumb)
+    return render_template('tenadams/timesheets.html', 
+                           data=data, 
+                           first_key=first_key, 
+                           departments=departments,
+                           users=users, 
+                           selected_department=department, 
+                           breadcrumb=breadcrumb)
 
 @tenadams.route('/nonbillable', methods=['GET', 'POST'])
 @login_required
@@ -188,7 +194,7 @@ def nonbillable():
     
     # Get department of the current user
     user_department = current_user.department if (hasattr(current_user, 'department') and current_user.department not in (None, '')) else None
-    print("User Department:", user_department)
+    # print("User Department:", user_department)
     # assign a varible to user deparment to use in the template later 
     department_to_use = user_department
 
@@ -237,12 +243,9 @@ def nonbillable():
         start_date_str = start_date.strftime('%Y-%m-%d')
     
     data_type = request.form.get('data_type') if request.method == 'POST' else 'management_time'
-    print(department_to_use)
     
     departments = fetch_departments(user_department=department_to_use)
     users = fetch_users(user_department=department_to_use)
-    print(departments)
-    print(users)
 
 
     nonbill_df = fetch_nonbillable(start_date_str, end_date_str, department_to_use, selected_user, data_type)
@@ -292,6 +295,7 @@ def nonbillable():
         grouped_data['Percentage_of_Total'] = (grouped_data['Actual_Hours_Worked'] / total_hours) * 100
     elif data_type == 'new_biz':
         # First, filter for 'zProposal/Opportunity'
+        print(nonbill_df)
         internal_initiative_df = nonbill_df[nonbill_df['Project_Type'] == 'zProposal/Opportunity']
         # then exclude entries where 'project_Name' contains 'Opp' or 'Opportunity'
         filtered_df = internal_initiative_df[
@@ -303,18 +307,18 @@ def nonbillable():
         total_hours = grouped_data['Actual_Hours_Worked'].sum()
         grouped_data['Percentage_of_Total'] = (grouped_data['Actual_Hours_Worked'] / total_hours) * 100
 
-    # print(grouped_data)
-    # # fetch the departments and users from BigQuery
-    # departments = fetch_departments()
-    # users = fetch_users()
+
     return render_template('tenadams/nonbillable.html', 
-                           start_date=start_date_str, 
-                           end_date=end_date_str, 
-                           departments=departments, 
-                           users=users, 
-                           grouped_data=grouped_data, 
-                           selected_department=selected_department, 
-                           data_type=data_type)
+                            user_department=user_department,
+                            departments=departments,
+                            users=users,  
+                            start_date=start_date_str, 
+                            end_date=end_date_str, 
+                            grouped_data=grouped_data, 
+                            selected_department=selected_department, 
+                            data_type=data_type,
+                            breadcrumb=breadcrumb,
+                            is_admin=is_admin)
     
   
 
