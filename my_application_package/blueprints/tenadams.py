@@ -249,6 +249,7 @@ def nonbillable():
 
 
     nonbill_df = fetch_nonbillable(start_date_str, end_date_str, department_to_use, selected_user, data_type)
+    print(nonbill_df.columns)
     # Process data based on data_type
     if data_type == 'management_time':
         grouped_data = nonbill_df[nonbill_df['Project_Type'] == 'zInternal: Management'].groupby('task_Name').agg({'Actual_Hours_Worked': 'sum'}).reset_index()
@@ -281,26 +282,30 @@ def nonbillable():
         total_hours = grouped_data['Actual_Hours_Worked'].sum()
         grouped_data['Percentage_of_Total'] = (grouped_data['Actual_Hours_Worked'] / total_hours) * 100
     elif data_type == 'opp_time':
-        # Filter for 'zProposal/Opportunity' first
-        internal_initiative_df = nonbill_df[nonbill_df['Project_Type'] == 'zProposal/Opportunity']
+        # Filter for 'zProposal/Opportunity' and where 'client' is not 'Ten Adams Business Development'
+        internal_initiative_df = nonbill_df[(nonbill_df['Project_Type'] == 'zProposal/Opportunity') & 
+                                            (nonbill_df['client'] != 'Ten Adams Business Development')]
+
         
        # Then include entries where 'project_Name' contains 'Opp' or 'Opportunity'
-        filtered_df = internal_initiative_df[
-        internal_initiative_df['project_Name'].str.contains('Opp', na=False) | 
-        internal_initiative_df['project_Name'].str.contains('Opportunity', na=False)]        
+        # filtered_df = internal_initiative_df[
+        # internal_initiative_df['project_Name'].str.contains('Opp', na=False) | 
+        # internal_initiative_df['project_Name'].str.contains('Opportunity', na=False)]        
+        filtered_df = internal_initiative_df
         # Proceed with aggregation on the filtered data
         grouped_data = filtered_df.groupby('project_Name').agg({'Actual_Hours_Worked': 'sum'}).reset_index()
         grouped_data = grouped_data.sort_values('Actual_Hours_Worked', ascending=False)
         total_hours = grouped_data['Actual_Hours_Worked'].sum()
         grouped_data['Percentage_of_Total'] = (grouped_data['Actual_Hours_Worked'] / total_hours) * 100
     elif data_type == 'new_biz':
-        # First, filter for 'zProposal/Opportunity'
-        print(nonbill_df)
-        internal_initiative_df = nonbill_df[nonbill_df['Project_Type'] == 'zProposal/Opportunity']
-        # then exclude entries where 'project_Name' contains 'Opp' or 'Opportunity'
-        filtered_df = internal_initiative_df[
-        ~(internal_initiative_df['project_Name'].str.contains('Opp', na=False) | 
-          internal_initiative_df['project_Name'].str.contains('Opportunity', na=False))]                
+         # Filter for 'zProposal/Opportunity' and where 'client' is not 'Ten Adams Business Development'
+        internal_initiative_df = nonbill_df[(nonbill_df['Project_Type'] == 'zProposal/Opportunity') & 
+                                            (nonbill_df['client'] == 'Ten Adams Business Development')]
+  # then exclude entries where 'project_Name' contains 'Opp' or 'Opportunity'
+        # filtered_df = internal_initiative_df[
+        # ~(internal_initiative_df['project_Name'].str.contains('Opp', na=False) | 
+        #   internal_initiative_df['project_Name'].str.contains('Opportunity', na=False))]            
+        filtered_df=internal_initiative_df    
         # Proceed with aggregation on the filtered data
         grouped_data = filtered_df.groupby('project_Name').agg({'Actual_Hours_Worked': 'sum'}).reset_index()
         grouped_data = grouped_data.sort_values('Actual_Hours_Worked', ascending=False)

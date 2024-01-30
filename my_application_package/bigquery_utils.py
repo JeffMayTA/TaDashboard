@@ -146,6 +146,7 @@ def fetch_nonbillable(start_date_str, end_date_str, department=None, selected_us
                 Digital_Utilization.Actual_Hours_Worked,
                 Digital_Utilization.Billable,
                 Digital_Utilization.Project_Type,
+                Digital_Utilization.client,
                 Digital_Utilization.project_Name,
                 Digital_Utilization.ServiceDescription,
                 Digital_Utilization.task_Name,
