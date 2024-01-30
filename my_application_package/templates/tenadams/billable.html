@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Non-Billable Time Detail{% endblock %}
+{% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
+
+{% block content %}
+
+<!-- Define the 'If' logic for Table Header Names adn column content based on the Data Type Selected -->
+  {% set header_name = 'Task Name' %}
+  {% set column_name = 'task_Name' %}
+  {% if data_type == 'management_time' or data_type == 'gen_admin' or data_type == 'operations' or data_type == 'training' or data_type == 'nbca' %}
+    {% set header_name = 'Task Name' %}
+    {% set column_name = 'task_Name' %}
+  {% elif data_type == 'internal_initiative'or data_type == 'opp_time' or data_type == 'new_biz' %}
+    {% set header_name = 'Project Name' %}
+    {% set column_name = 'project_Name' %}
+  {% endif %}
+
+  <!-- ... rest of your template ... -->
+
+
+  <div class="row">
+    <div class="col position-relative z-index-2">
+      <div class="card card-plain mb-4">
+        <div class="card-body p-3">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="d-flex flex-column h-100">
+                <h2 class="font-weight-bolder mb-0">Billable Time</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card mb-4">
+            <div class="card-body p-3">
+              <form method="post" action="{{ url_for('tenadams.nonbillable') }}" class="utilization-form">
+                <div class="row align-items-end">
+                  <div class="col-lg-2 col-sm-6">
+                    <div class="form-group">
+                      <label for="start_date">Start Date:</label>
+                      <input type="text" class="form-control datepicker" id="start_date" name="start_date" value="{{ start_date }}" required>
+                    </div>
+                  </div>
+                  <div class="col-lg-2 col-sm-6">
+                    <div class="form-group">
+                      <label for="end_date">End Date:</label>
+                      <input type="text" class="form-control datepicker" id="end_date" name="end_date" value="{{ end_date }}" required>
+                    </div>
+                  </div>
+                  <div class="col-lg-2 col-sm-6">
+                  <div class="form-group">
+                    <label for="data_type">Data Type:</label>
+                    <select id="data_type" name="data_type" class="form-control">
+                      <option value="management_time" {% if data_type == 'management_time' %}selected{% endif %}>Management Time by Task</option>
+                      <option value="gen_admin" {% if data_type == 'gen_admin' %}selected{% endif %}>Gen Admin by Task</option>
+                      <option value="operations" {% if data_type == 'operations' %}selected{% endif %}>Operations Time by Task</option>
+                      <option value="training" {% if data_type == 'training' %}selected{% endif %}>Training Time by Task</option>
+                      <option value="nbca" {% if data_type == 'nbca' %}selected{% endif %}>NBCA Time by Task</option>
+                      <option value="internal_initiative" {% if data_type == 'internal_initiative' %}selected{% endif %}>Internal Initiative by Project</option>
+                      <option value="opp_time" {% if data_type == 'opp_time' %}selected{% endif %}>Opporunity Time by Project</option>
+                      <option value="new_biz" {% if data_type == 'new_biz' %}selected{% endif %}>New Business by Project</option>
+                      <!-- Add other options here -->
+                    </select>
+                  </div>
+                  </div>
+                  <div class="col-lg-2 col-sm-6">
+                    <div class="form-group">
+                      <label for="department">Department:</label>
+                      <select id="department" name="department" class="form-control">
+                        <option value="">Select a department</option>
+                        {% for dep in departments %}
+                          {% if is_admin or dep == user_department %}
+                          {% set display_department = selected_department if selected_department else user_department %}
+                          <option value="{{ dep }}" {{ 'selected' if dep == display_department }}>{{ dep }}</option>                            
+                          {% endif %}
+                        {% endfor %}
+                    </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-2 col-sm-6">
+                    <div class="form-group">
+                      <label for="user">User:</label>
+                      <select id="user" name="user" class="form-control">
+                        <option value="">Select a user</option>
+                        {% for user in users %}
+                          {% if not user_department or user['User_Department'] == user_department %}
+                          <option value="{{ user['User_Full_Name'] }}" data-department="{{ user['User_Department'] }}" {{ 'selected' if user['User_Full_Name'] == request.form.get('user') }}>{{ user['User_Full_Name'] }}</option>
+                          {% endif %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="col-lg-2 col-sm-12">
+                    <div class="form-group">
+                      <button class="btn btn-primary btn-block w-100 m-0" type="submit">Filter</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Table for NonBillable Breakdown -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h4 class="font-weight-bolder mb-3">
+            {% if data_type == 'management_time' %}
+              Management Time by Task
+            {% elif data_type == 'gen_admin' %}
+              General Admin by Task
+              {% elif data_type == 'operations' %}
+              Operations Time by Task
+              {% elif data_type == 'training' %}
+              Training Time by Task
+              {% elif data_type == 'nbca' %}
+              NBCA Time by Task
+              {% elif data_type == 'internal_initiative' %}
+              Internal Initiative by Project
+              {% elif data_type == 'opp_time' %}
+              Opportunity Time by Project
+              {% elif data_type == 'new_biz' %}
+              New Business by Project
+            {% endif %}
+          </h4>
+          <div class="table-responsive">
+            <div class="table-responsive">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                      <th>{{ header_name }}</th>
+                      <th>Total Hours</th>
+                      <th>% of Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for index, row in grouped_data.iterrows() %}
+                  <tr>
+                    <td>{{ row[column_name] }}</td>
+                    <td>{{ row['Actual_Hours_Worked'] }}</td>
+                    <td>{{ "%.2f"|format(row.Percentage_of_Total) }}%</td> <!-- Format the percentage to two decimal places -->
+                       <td>     <!-- Progress bar -->
+                        <div class="progress">
+                          <div class="progress-bar bg-dark" role="progressbar" style="width: {{ row.Percentage_of_Total }}%;" aria-valuenow="{{ row.Percentage_of_Total }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </td> <!-- Format the percentage to two decimal places -->
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  {% include '_corejs.html' %}
+
+  <!-- Datepicker scripts --> 
+  <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
+  <script>
+    // Datepicker
+    if (document.querySelector('.datepicker')) {
+      flatpickr('.datepicker', {
+        mode: "single"
+      });
+    }
+  </script>
+  
+  
+
+  {% endblock %}
