@@ -176,6 +176,17 @@ def fetch_nonbillable(start_date_str, end_date_str, department=None, selected_us
     data_type_filter = ""
     if data_type == 'management_time':
         data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Management'"
+    elif data_type == 'gen_admin':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Gen Admin'"
+    elif data_type == 'operations':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Operations'"
+    elif data_type == 'training':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Training'"
+    elif data_type == 'nbca':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: NBCA'"
+    elif data_type == 'internal_initiative':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Internal Initiative'"
+
         # Here you can add more columns or conditions specific to 'management time'
 
     try:
