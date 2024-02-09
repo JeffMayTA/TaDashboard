@@ -105,59 +105,76 @@
         </div>
       </div>
       <!-- Table for NonBillable Breakdown -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <h4 class="font-weight-bolder mb-3">
-            {% if data_type == 'management_time' %}
-              Management Time by Task
-            {% elif data_type == 'gen_admin' %}
-              General Admin by Task
-              {% elif data_type == 'operations' %}
-              Operations Time by Task
-              {% elif data_type == 'training' %}
-              Training Time by Task
-              {% elif data_type == 'nbca' %}
-              NBCA Time by Task
-              {% elif data_type == 'internal_initiative' %}
-              Internal Initiative by Project
-              {% elif data_type == 'opp_time' %}
-              Opportunity Time by Project
-              {% elif data_type == 'new_biz' %}
-              New Business by Project
-            {% endif %}
-          </h4>
-          <div class="table-responsive">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body p-3">
+              <h4 class="font-weight-bolder mb-0">
+                {% if data_type == 'management_time' %}
+                  Management Time by Task
+                {% elif data_type == 'gen_admin' %}
+                  General Admin by Task
+                  {% elif data_type == 'operations' %}
+                  Operations Time by Task
+                  {% elif data_type == 'training' %}
+                  Training Time by Task
+                  {% elif data_type == 'nbca' %}
+                  NBCA Time by Task
+                  {% elif data_type == 'internal_initiative' %}
+                  Internal Initiative by Project
+                  {% elif data_type == 'opp_time' %}
+                  Opportunity Time by Project
+                  {% elif data_type == 'new_biz' %}
+                  New Business by Project
+                {% endif %}
+              </h4>
+            </div>
             <div class="table-responsive">
-              <table class="table align-items-center mb-0">
-                <thead>
-                  <tr>
-                      <th>{{ header_name }}</th>
-                      <th>Total Hours</th>
-                      <th>% of Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for index, row in grouped_data.iterrows() %}
-                  <tr>
-                    <td>{{ row[column_name] }}</td>
-                    <td>{{ row['Actual_Hours_Worked'] }}</td>
-                    <td>{{ "%.2f"|format(row.Percentage_of_Total) }}%</td> <!-- Format the percentage to two decimal places -->
-                       <td>     <!-- Progress bar -->
-                        <div class="progress">
-                          <div class="progress-bar bg-dark" role="progressbar" style="width: {{ row.Percentage_of_Total }}%;" aria-valuenow="{{ row.Percentage_of_Total }}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </td> <!-- Format the percentage to two decimal places -->
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table id="myTable" class="table table-hover align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-xxs font-weight-bolder opacity-7">{{ header_name }}</th>
+                      <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Total Hours</th>
+                      <th class="text-uppercase text-xxs font-weight-bolder opacity-7">% of Total</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for index, row in grouped_data.iterrows() %}
+                    <tr>
+                      <td>
+                        <div class="py-1"><p class="font-weight-bold mb-0">{{ row[column_name] }}</p></div>
+                      </td>
+                      <td><p class="font-weight-bold mb-0">{{ row['Actual_Hours_Worked'] }}</p></td>
+                      <td><p class="font-weight-bold mb-0">{{ "%.2f"|format(row.Percentage_of_Total) }}%</p></td> <!-- Format the percentage to two decimal places -->
+                        <td>     <!-- Progress bar -->
+                          <div class="progress">
+                            <div class="progress-bar bg-dark" role="progressbar" style="width: {{ row.Percentage_of_Total }}%;" aria-valuenow="{{ row.Percentage_of_Total }}" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                      </td> <!-- Format the percentage to two decimal places -->
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
   {% include '_corejs.html' %}
+  <script>
+    const dataTable = new simpleDatatables.DataTable("#myTable", {
+      searchable: false,
+      columns: [
+        // Disable sorting on the seventh column 
+        { select: 3, sortable: false }
+      ]
+    })
+  </script>
 
   <!-- Datepicker scripts --> 
   <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
