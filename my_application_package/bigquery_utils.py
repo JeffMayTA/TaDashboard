@@ -126,6 +126,47 @@ def get_timesheets_data():
         logging.error(f"Error in get_timesheets_data: {e}")
         raise
 
+def fetch_billable(start_date_str, end_date_str, department=None, selected_user=None):
+    credentials, project = create_bigquery_client()
+    department_filter = f"AND Digital_Utilization.User_Department = '{department}'" if department else ""
+    user_filter = f"AND Digital_Utilization.User_Full_Name = '{selected_user}'" if selected_user else ""
+
+
+    try:
+        query = f"""
+            SELECT
+                Digital_Utilization.User_Department,
+                Digital_Utilization.User_Full_Name,
+                Digital_Utilization.Date_Worked,
+                Digital_Utilization.Actual_Hours_Worked,
+                Digital_Utilization.Billable,
+                Digital_Utilization.Project_Type,
+                Digital_Utilization.client,
+                Digital_Utilization.project_Name,
+                Digital_Utilization.ServiceDescription,
+                Digital_Utilization.task_Name,
+            FROM
+                `timesheet-data-290519.Utilization.Digital-Utilization` AS Digital_Utilization
+            JOIN
+                `timesheet-data-290519.Utilization.Employee-Data` employee
+            ON
+                Digital_Utilization.User_Full_Name = employee.User_Full_Name
+            WHERE
+                Date_Worked BETWEEN '{start_date_str}' AND '{end_date_str}'
+                AND Digital_Utilization.Billable = 'Billable' 
+                {department_filter}
+                {user_filter}
+            ORDER BY
+                Digital_Utilization.User_Full_Name;
+            """
+        nonbill_df = pd.read_gbq(query, project_id=project, credentials=credentials)
+        return nonbill_df
+    except Exception as e:
+            logging.error(f"Error in fetch_utilization_data: {e}")
+            logging.error(f"Input values: param1={start_date_str}, param2={end_date_str}")
+            raise
+
+
 def fetch_nonbillable(start_date_str, end_date_str, department=None, selected_user=None, data_type=None):
     credentials, project = create_bigquery_client()
     department_filter = f"AND Digital_Utilization.User_Department = '{department}'" if department else ""
@@ -135,6 +176,17 @@ def fetch_nonbillable(start_date_str, end_date_str, department=None, selected_us
     data_type_filter = ""
     if data_type == 'management_time':
         data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Management'"
+    elif data_type == 'gen_admin':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Gen Admin'"
+    elif data_type == 'operations':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Operations'"
+    elif data_type == 'training':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Training'"
+    elif data_type == 'nbca':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: NBCA'"
+    elif data_type == 'internal_initiative':
+        data_type_filter = "AND Digital_Utilization.Project_Type = 'zInternal: Internal Initiative'"
+
         # Here you can add more columns or conditions specific to 'management time'
 
     try:
