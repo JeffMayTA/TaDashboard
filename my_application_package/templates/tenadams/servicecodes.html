@@ -81,12 +81,12 @@
               <h4 class="font-weight-bolder mb-0">Service Code Breakdown</h4>
             </div>
             <div class="table-responsive">
-              <table id="myTableTwo" class="table align-items-center mb-1">
+              <table id="myTable" class="table align-items-center mb-1">
                 <thead>
                   <tr>
-                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">Service Code</th>
-                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">Actual Hours</th>
-                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7 px-3">Percentage</th>
+                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Service Code</th>
+                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Actual Hours</th>
+                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7">Percentage</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -94,19 +94,15 @@
                   {% for index, row in grouped_data.iterrows() %}
                   <tr>
                     <td>
-                      <div class="d-flex px-2 py-1">
-                        <h6 class="mb-0">{{ row['ServiceDescription'] }}</h6>
-                      </div>
+                      <h6 class="mb-0">{{ row['ServiceDescription'] }}</h6>
                     </td>
                     <td>
-                      <div class="d-flex px-2 py-1">
-                        <h6 class="mb-0">{{ row['Actual_Hours_Worked'] }}</h6>
-                      </div>
+                      <h6 class="mb-0">{{ row['Actual_Hours_Worked'] }}</h6>
                     </td>
-                    <td class="px-3">
+                    <td>
                       <p class="text font-weight-bold mb-0">{{ "%.2f"|format(row['Percentage']) }}%</p>
                     </td>
-                    <td class="px-3" style="min-width:200px;">
+                    <td style="min-width:200px;">
                       <div class="progress w-100">
                         <div class="progress-bar bg-dark" role="progressbar" style="width: {{ row['Percentage'] }}%;" aria-valuenow="{{ row['Percentage'] }}%" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
@@ -124,5 +120,14 @@
   </div>
 
   {% include '_corejs.html' %}
+  <script>
+    const dataTable = new simpleDatatables.DataTable("#myTable", {
+      searchable: false,
+      columns: [
+        // Disable sorting on the seventh column 
+        { select: 3, sortable: false }
+      ]
+    })
+  </script>
 
   {% endblock %}
