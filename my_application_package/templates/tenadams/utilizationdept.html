@@ -1,0 +1,469 @@
+{% extends "base.html" %}
+{% block title %}Utilization - Department{% endblock %}
+{% block bodyclass %}g-sidenav-show h-100 bg-gray-100{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col position-relative z-index-2">
+      <div class="card card-plain mb-4">
+        <div class="card-body p-3">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="d-flex flex-column h-100">
+                <h2 class="font-weight-bolder mb-0">Utilization Department</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="card ">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Hours</p>
+                    <h4 class="font-weight-bolder mb-0">
+                      {{ total_hours }}
+                    </h4>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="far fa-clock text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="card ">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="mb-0 text-sm text-capitalize font-weight-bold">Total Billable Hours</p>
+                    <h4 class="font-weight-bolder mb-0">
+                      {{ total_billable }}
+                    </h4>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="fas fa-dollar-sign text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="card ">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="mb-0 text-sm text-capitalize font-weight-bold">Overall Utilization</p>
+                    <h4 class="font-weight-bolder mb-0">
+                      {{ overall_utilization_rate_formatted }}
+                    </h4>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                    <i class="fas fa-chart-line text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card mb-4">
+            <div class="card-body p-3">
+              <form method="post" action="{{ url_for('tenadams.utilizationdept') }}" class="utilization-form">
+                <div class="row align-items-end">
+                  <div class="col-lg-3 col-sm-6">
+                    <div class="form-group">
+                      <label for="start_date">Start Date:</label>
+                      <input type="text" class="form-control datepicker" id="start_date" name="start_date" value="{{ start_date }}" required>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-sm-6">
+                    <div class="form-group">
+                      <label for="end_date">End Date:</label>
+                      <input type="text" class="form-control datepicker" id="end_date" name="end_date" value="{{ end_date }}" required>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="department">Department:</label>
+                        <select id="department" name="department" class="form-control">
+                            <option value="">Select a department</option>
+                            {% for dep in departments %}
+                            {% if is_admin or dep == user_department %}
+                            {% set display_department = selected_department if selected_department else user_department %}
+                            <option value="{{ dep }}" {{ 'selected' if dep == display_department }}>{{ dep }}</option>                            
+                            {% endif %}
+                        {% endfor %}
+                        
+                        </select>
+                    </div>
+                </div>
+                
+                  
+                  
+                  <div class="col-lg-3 col-sm-12">
+                    <div class="form-group">
+                      <button class="btn btn-primary btn-block w-100 m-0" type="submit">Filter</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Working Time Section -->
+      <div class="row mt-4">      
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body p-3">
+              <h4 class="font-weight-bolder mb-3">Non-Billable Time Breakdown</h4>
+              <div class="row">
+                <div class="col-xxl-5 mb-4">
+                  <div class="chart">
+                    <canvas id="non-billable-chart" class="chart-canvas"  height="300"></canvas>
+                  </div>
+                </div>
+                <div class="col-xxl-7">
+                  <div class="table-responsive">
+                    <table class="table align-items-center mb-0">
+                      <tbody id="non-billable-chart-legend" class="legend-container">
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body p-3">
+              <h4 class="font-weight-bolder mb-3">Billable Time Breakdown (by Client)</h4>
+              <div class="row">
+                <div class="col-xxl-5 mb-4">
+                  <div class="chart">
+                    <canvas id="billable-chart" class="chart-canvas"  height="300"></canvas>
+                  </div>
+                </div>
+                <div class="col-xxl-7">
+                  <div class="table-responsive">
+                    <table class="table align-items-center mb-0">
+                      <tbody id="billable-chart-legend" class="legend-container">
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include '_corejs.html' %}
+  <script>
+    const dataTable = new simpleDatatables.DataTable("#myTable", {
+      searchable: false,
+      columns: [
+        // Sort the sixth column in descending order
+        { select: 5, sort: "desc" },
+        // Disable sorting on the seventh column 
+        { select: 6, sortable: false }
+      ]
+    })
+    const dataTableTwo = new simpleDatatables.DataTable("#myTableTwo", {
+      searchable: false,
+      columns: [
+        // Sort the second column in descending order
+        { select: 1, sort: "desc" }
+      ]
+    })
+  </script>
+  <!-- Datepicker scripts --> 
+  <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
+  <script>
+    // Datepicker
+    if (document.querySelector('.datepicker')) {
+      flatpickr('.datepicker', {
+        mode: "single"
+      });
+    }
+  </script>
+  
+  <script>
+    // Register the plugin
+    Chart.register(ChartDataLabels);
+  
+    // Parse the JSON string passed from the backend
+    const nonBillableDataString = '{{ non_billable_data | safe }}';
+    let nonBillableData = [];
+
+    // get billable data
+    let clientLabels = {{ billable_time['client'].tolist()|tojson }};
+    let billableTimeData = {{ billable_time['billable_time'].tolist()|tojson }};
+
+    // Combine clientLabels and billableTimeData into a single array of objects
+    const billableCombinedData = clientLabels.map((client, index) => ({
+      clientName: client,
+      billableTime: billableTimeData[index]
+    }));
+
+    // Sort the combined array based on the billableTime values in descending order
+    billableCombinedData.sort((a, b) => b.billableTime - a.billableTime);
+
+    // Extract the sorted client names and billable times arrays from the sorted combined array
+    const sortedClientNames = billableCombinedData.map(item => item.clientName);
+    const sortedBillableTimes = billableCombinedData.map(item => item.billableTime);
+
+
+    
+    if (nonBillableDataString) {
+      try {
+        nonBillableData = JSON.parse(nonBillableDataString);
+      } catch (error) {
+        console.error("Error parsing non_billable_data:", error);
+      }
+    }
+  
+    // Combine projectTypes and nonBillableTimes arrays into a single array of objects
+    const combinedData = nonBillableData.map((item, index) => ({
+      projectType: item.project_type,
+      nonBillableTime: item.non_billable_time
+    }));
+    
+    // Sort the combined array based on the nonBillableTimes values in descending order
+    combinedData.sort((a, b) => b.nonBillableTime - a.nonBillableTime);
+    
+    // Extract the sorted projectTypes and nonBillableTimes arrays from the sorted combined array
+    const sortedProjectTypes = combinedData.map(item => item.projectType);
+    const sortedNonBillableTimes = combinedData.map(item => item.nonBillableTime);
+  
+  
+    // Create a non-billable donut chart using Chart.js
+    const ctx = document.getElementById('non-billable-chart').getContext('2d');
+    const nonBillableDonutChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: sortedProjectTypes,
+        datasets: [{
+          data: sortedNonBillableTimes,
+          backgroundColor: ["#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00", "#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00"],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutoutPercentage: 70,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                var dataset = context.dataset;
+                var index = context.dataIndex;
+                var data = context.chart.data;
+                var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                  return previousValue + currentValue;
+                });
+                var currentValue = dataset.data[index];
+                var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                return data.labels[index] + ": " + percentage + "%";
+              }
+            }
+          },
+          datalabels: {
+            formatter: function(value, context) {
+              var dataset = context.chart.data.datasets[context.datasetIndex];
+              var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                return previousValue + currentValue;
+              });
+              var percentage = Math.floor(((value / total) * 100) + 0.5);
+          
+              // Only show labels for pie pieces with a percentage greater than or equal to 5%
+              if (percentage >= 5 ) {
+                return percentage + '%';
+              } else {
+                return null; // Return null to hide the label for smaller pie pieces
+              }
+            },
+            color: '#fff',
+            font: {
+              size: 14,
+              weight: 'bold',
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+              shadowBlur: 5,
+              shadowOffsetX: 2,
+              shadowOffsetY: 2
+            },
+            anchor: 'center', // Change anchor to 'center'
+            align: 'center', // Change align to 'center'
+            offset: 0 // Set offset to 0
+          }
+        }
+      }
+    });
+  
+    // Manually create the non-billable legend
+    const nbLegendContainer = document.getElementById('non-billable-chart-legend');
+    combinedData.forEach((item, index) => {
+      const value = item.nonBillableTime;
+      if (value > 0) {
+        const legendItem = document.createElement('tr');
+        const legendItemData = document.createElement('td');
+        legendItem.appendChild(legendItemData);
+
+        const legendItemContent = document.createElement('div');
+        legendItemContent.classList.add('d-flex', 'px-2', 'py-0');
+        legendItemData.appendChild(legendItemContent);
+        
+    
+        // Create the color block
+        const colorBlock = document.createElement('span');
+        colorBlock.classList.add('badge', 'me-3', 'd-block');
+        colorBlock.style.backgroundColor = nonBillableDonutChart.data.datasets[0].backgroundColor[index];
+        legendItemContent.appendChild(colorBlock);
+    
+        // Add the project type label
+        const labelTextContain = document.createElement('div');
+        labelTextContain.classList.add('d-flex', 'flex-column', 'justify-content-center');
+        legendItemContent.appendChild(labelTextContain);
+
+        const labelText = document.createElement('h6');
+        labelText.classList.add('mb-0', 'text-sm');
+        labelText.textContent = item.projectType;
+        labelTextContain.appendChild(labelText);
+    
+        nbLegendContainer.appendChild(legendItem);
+      }
+    });
+
+    // Create a billable donut chart using Chart.js
+    const ctx2 = document.getElementById('billable-chart').getContext('2d');
+    const billableDonutChart = new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: sortedClientNames,
+        datasets: [{
+          data: sortedBillableTimes,
+          backgroundColor: ["#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00", "#FF0000", "#FFA500", "#cc9900", "#008000", "#0000FF", "#4B0082", "#9400D3", "#FF00FF", "#00FF00", "#FF1493", "#00FFFF", "#800000", "#FFC0CB", "#00FF7F", "#FF8C00"],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutoutPercentage: 70,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                var dataset = context.dataset;
+                var index = context.dataIndex;
+                var data = context.chart.data;
+                var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                  return previousValue + currentValue;
+                });
+                var currentValue = dataset.data[index];
+                var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                return data.labels[index] + ": " + percentage + "%";
+              }
+            }
+          },
+          datalabels: {
+            formatter: function(value, context) {
+              var dataset = context.chart.data.datasets[context.datasetIndex];
+              var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                return previousValue + currentValue;
+              });
+              var percentage = Math.floor(((value / total) * 100) + 0.5);
+          
+              // Only show labels for pie pieces with a percentage greater than or equal to 5%
+              if (percentage >= 5 ) {
+                return percentage + '%';
+              } else {
+                return null; // Return null to hide the label for smaller pie pieces
+              }
+            },
+            color: '#fff',
+            font: {
+              size: 14,
+              weight: 'bold',
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+              shadowBlur: 5,
+              shadowOffsetX: 2,
+              shadowOffsetY: 2
+            },
+            anchor: 'center', // Change anchor to 'center'
+            align: 'center', // Change align to 'center'
+            offset: 0 // Set offset to 0
+          }
+        }
+      }
+    });
+
+    // Manually create the billable legend using the sorted data
+      const bLegendContainer = document.getElementById('billable-chart-legend');
+
+      billableCombinedData.forEach((item, index) => {
+          const value = item.billableTime;
+          if (value > 0) {
+              const legendItem = document.createElement('tr');
+              const legendItemData = document.createElement('td');
+              legendItem.appendChild(legendItemData);
+
+              const legendItemContent = document.createElement('div');
+              legendItemContent.classList.add('d-flex', 'px-2', 'py-0');
+              legendItemData.appendChild(legendItemContent);
+
+              // Create the color block
+              const colorBlock = document.createElement('span');
+              colorBlock.classList.add('badge', 'me-3', 'd-block');
+              colorBlock.style.backgroundColor = billableDonutChart.data.datasets[0].backgroundColor[index];
+              legendItemContent.appendChild(colorBlock);
+
+              // Add the client label
+              const labelTextContain = document.createElement('div');
+              labelTextContain.classList.add('d-flex', 'flex-column', 'justify-content-center');
+              legendItemContent.appendChild(labelTextContain);
+
+              const labelText = document.createElement('h6');
+              labelText.classList.add('mb-0', 'text-sm');
+              labelText.textContent = item.clientName; // Use the sorted client name here
+              labelTextContain.appendChild(labelText);
+
+              bLegendContainer.appendChild(legendItem);
+          }
+      });
+
+
+  </script>
+  
+  {% endblock %}
